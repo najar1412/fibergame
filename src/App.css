@@ -36,3 +36,48 @@
     transform: rotate(360deg);
   }
 }
+
+.ReactModalPortal {
+  z-index: 10;
+  position: relative;
+}
+.ReactModal__Content {
+background-color: rgba(255, 255, 255, .9)!important;
+}
+.location-modal {
+  width:auto;
+  margin-left:auto;
+  position: absolute;
+    inset: 12px;
+    border: 1px solid rgb(204, 204, 204);
+    background: rgb(255, 255, 255);
+    overflow: auto;
+    border-radius: 4px;
+    outline: none;
+    padding: 12px;
+}
+.button {
+  @apply border flex items-center border-black justify-center w-[50px] h-[50px] bg-black text-white uppercase text-sm cursor-pointer hover:bg-white hover:text-black hover:border-black hover:animate-pulse transition duration-150 ease-linear
+}
+.button-secondary {
+  @apply bg-white text-black
+}
+.button-long {
+  @apply border w-[150px] p-0 py-2 px-4 
+}
+.button-fit {
+  @apply border w-fit p-0 py-2 px-4 
+}
+.button-disabled {
+  @apply !pointer-events-none !bg-gray-300 !text-gray-500 !animate-none border-gray-300 select-none
+}
+
+
+@media (min-width: 1024px) { 
+  .location-modal {
+    width:50%;
+    max-width: 700px;
+      inset: 40px;
+      padding: 20px;
+  }
+ }
