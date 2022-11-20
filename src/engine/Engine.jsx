@@ -13,9 +13,9 @@ import House from '../scenes/House';
 import Village from '../scenes/Village';
 import World from '../scenes/World';
 import Create from '../scenes/Create';
-import RagDollDisplay from "../ui/RagDollDisplay";
-import TimedButton from "../comps/TimedButton";
 import { getTask } from "../api/tasks";
+
+import ModalSelector from "../3dComps/ModalSelector";
 
 function Loading() {
     return (
@@ -78,7 +78,7 @@ const HOUSE = {
 
 const SURROUNDING = {
     tasks: [
-        {name: 'search', verb: 'searching', location: 'surroundings', timer: 20000}
+        {id: 1, name: 'search', verb: 'searching', location: 'surroundings', timer: 1000}
     ]
 }
 
@@ -99,7 +99,7 @@ const WORLDLOCATIONS = [
     {
         name: 'Ruined Factory',
         type: 'poi',
-        tasks: [{name: 'explore', timer: 100000, verb: 'exploring', location: 'Ruined Factory'}],
+        tasks: [{id: 1, name: 'explore', timer: 100000, verb: 'exploring', location: 'Ruined Factory'}],
         secrets: [{id:1, description:'higher chance to find metal', known: false}],
         color: 'rgb(103, 58, 183)',
         latlong: [29.181634715509766, 101.15462958038809],
@@ -108,7 +108,7 @@ const WORLDLOCATIONS = [
     {
         name: "Choad Featherwings's camp",
         type: 'player camp',
-        tasks: [{name: 'explore', timer: 100000, verb: 'exploring', location: "Choad Featherwing's camp"}, {name: 'raid', timer: 10000, verb: 'raiding', location: "Choad Featherwing's camp"}],
+        tasks: [{id: 2, name: 'explore', timer: 100000, verb: 'exploring', location: "Choad Featherwing's camp"}, {id: 3, name: 'raid', timer: 10000, verb: 'raiding', location: "Choad Featherwing's camp"}],
         secrets: [],
         color: 'rgb(169, 2, 2)',
         latlong: [-42.04538429340975, -69.61126993398138],
@@ -117,8 +117,8 @@ const WORLDLOCATIONS = [
     {
         name: 'supply crate',
         type: 'event',
-        tasks: [{name: 'explore', timer: 100000, verb: 'exploring', location: "supply crate"}],
-        secrets: [{id:1, description:'superior source of general items', known: false}],
+        tasks: [{id: 4, name: 'explore', timer: 100000, verb: 'exploring', location: "supply crate"}],
+        secrets: [{id:2, description:'superior source of general items', known: false}],
         color: 'rgb(225, 85, 40)',
         latlong: [67.86793861362021, -141.2839090245714],
         description: 'This large town is located in the mountains and looks very old-fashioned.  It is best-known for the produce it exports and its fishing spots.  Also, there is an old ceremonial site nearby.'
@@ -126,11 +126,22 @@ const WORLDLOCATIONS = [
     {
         name: 'copper mine',
         type: 'resource',
-        tasks: [{name: 'explore', timer: 100000, verb: 'exploring', location: "copper mine"}],
-        secrets: [{id:1, description:'superior chance to find copper', known: true}, {id:1, description:'higher chance to find metal', known: false}],
+        tasks: [{id: 5, name: 'explore', timer: 100000, verb: 'exploring', location: "copper mine"}],
+        secrets: [{id:3, description:'superior chance to find copper', known: true}, {id:4, description:'higher chance to find metal', known: false}],
         color: 'rgb(76, 175, 80)',
         latlong: [20.149487391978546, 51.192195156767156],
         description: 'This large town is located in the mountains and looks very old-fashioned.  It is best-known for the produce it exports and its fishing spots.  Also, there is an old ceremonial site nearby.'
+    }
+]
+
+const SELECTABLES = [
+    {
+        name: 'fireplace',
+        type: 'selectable',
+        tasks: [],
+        // secrets: [],
+        color: 'rgb(30, 94, 225)',
+        description: 'A basic fire ring.'
     }
 ]
 
@@ -281,6 +292,7 @@ const Engine = (props) => {
     const [placedItems, setPlacedItems] = useState([])
     const [selectedMesh, setSelectedMesh] = useState({})
     const [modalIsOpen, setIsOpen] = useState(false);
+    const [selectableToPlace, setSelectableToPlace] = useState(null)
   
     function openModal() {
       setIsOpen(true);
@@ -312,11 +324,14 @@ const Engine = (props) => {
             case 'village':
                 return <Village data={SURROUNDING} canPlace={canPlace} setCanPlace={setCanPlace} 
                 placeables={placeables} setPlaceables={setPlaceables} character={character}
-                placedItems={placedItems} setPlacedItems={setPlacedItems}
+                placedItems={placedItems} setPlacedItems={setPlacedItems} selectables={SELECTABLES}
+                openModal={openModal} selectedMesh={selectedMesh} setSelectedMesh={setSelectedMesh} selectableToPlace={selectableToPlace}
                 />
                 break;
             case 'world':
-                return <World data={WORLD} locations={WORLDLOCATIONS} character={character.character} openModal={openModal} selectedMesh={selectedMesh} setSelectedMesh={setSelectedMesh}/>
+                return <World data={WORLD} locations={WORLDLOCATIONS} character={character.character} 
+                openModal={openModal} selectedMesh={selectedMesh} setSelectedMesh={setSelectedMesh}
+                />
                 break;
             default:
                 return <House data={HOUSE} character={character.character}/>
@@ -353,14 +368,14 @@ const Engine = (props) => {
                         <LocationDisplay ChangeScene={ChangeScene}/>
                         
                         <ActionMenu location={SURROUNDING} character={character} characterTask={characterTask} setCharacterTask={setCharacterTask}/>
-                        <AwaitingPlacement character={character} placeables={placeables} setCanPlace={setCanPlace}/>
+                        <AwaitingPlacement character={character} placeables={placeables} setCanPlace={setCanPlace} setSelectableToPlace={setSelectableToPlace}/>
                     </div>
                 );
                 break;
             case 'world':
                 return (
                     <div className='absolute top-0 z-10 flex flex-col h-screen w-screen pointer-events-none p-8'>
-    <CharacterDisplay character={character} setPlaceables={setPlaceables} characterTask={characterTask}/>
+                        <CharacterDisplay character={character} setPlaceables={setPlaceables} characterTask={characterTask}/>
                         <LocationDisplay ChangeScene={ChangeScene}/>
                         
                         <ActionMenu location={WORLD} character={character} characterTask={characterTask} setCharacterTask={setCharacterTask}/>
@@ -410,45 +425,10 @@ const Engine = (props) => {
         className="location-modal"
     >
         <div onClick={closeModal} className="absolute top-0 right-0 mr-8 mt-8 cursor-pointer">close</div>
-        <h1 className='text-3xl capitalize'>{selectedMesh.locationData ? selectedMesh.locationData.name : null}</h1>
-        <p class="uppercase mb-8">{selectedMesh.locationData ? selectedMesh.locationData.type : null}</p>
-        <div className="mb-8">
-            <p>{selectedMesh.locationData ? selectedMesh.locationData.description : null}</p>
-        </div>
-        <div className="flex flex-col sm:flex-row">
-            <div className="flex flex-col w-2/4">
-                {
-                    selectedMesh.locationData && selectedMesh.locationData.tasks.length ?
-                        <div className='flex flex-col'>
-                            
-                            {selectedMesh.locationData.tasks.map(task => <TimedButton disabled={characterTask} label={task.name} taskData={task}  timer={task.timer} clickFunc={() => handleTask(task.name)} setCharacterTask={setCharacterTask} />)}
-                            
-                        </div>
-                    
-                    :
-                    null
-                }
-                
-            </div>
-            <div className="w-2/4">
-                {
-                    selectedMesh.locationData && selectedMesh.locationData.secrets.length ?
-                    <Fragment>
-                        <h2 className="text-2xl capitalize mb-4">secrets found (0/0)</h2>
-                        <div className='flex flex-col'>
-                            {selectedMesh.locationData.secrets.map(secret => secret.known ? <div>{secret.description}</div> : <div>???</div>)}
-                        </div>
-                    </Fragment>
-                    
-                    :
-                    null
-                }
-            </div>
-        </div>
-        <div className="flex flex-col">
-                <p>Trade</p>
-                <div>item 01</div>
-        </div>
+
+        <ModalSelector selectedMesh={selectedMesh} handleTask={handleTask} characterTask={characterTask} setCharacterTask={setCharacterTask} />
+
+
     </Modal>
 
     </Fragment>

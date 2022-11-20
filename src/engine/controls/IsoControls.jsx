@@ -16,9 +16,9 @@ function IsoControls(props) {
       args={[camera, gl.domElement]}
       enableDamping={true}
       dampingFactor={0.05}
-      minDistance={10}
-      maxDistance={50}
-      maxPolarAngle={0}
+      minDistance={20}
+      maxDistance={20}
+      // maxPolarAngle={0}
       {...props}
     />
   )

@@ -8,7 +8,6 @@ const TimedButton = (props) => {
     function runCounter() {
         setCounter(counter - 1)
         if (counter === 0) {
-            console.log('reset')
             setStartCountDown(false)
             setCounter(props.timer / 1000)
             props.setCharacterTask(false)

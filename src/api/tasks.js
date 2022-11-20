@@ -53,8 +53,6 @@ function getLoot(table=GENERALLOOTTABLE, amount=0, rareAmount=1) {
 
 
 function search () {
-    console.log('search')
-
     return getLoot(GENERALLOOTTABLE);
 }
 

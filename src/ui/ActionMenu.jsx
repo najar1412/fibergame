@@ -21,7 +21,7 @@ const ActionMenu = (props) => {
 
         {
             props.location.tasks.map((item) =>
-                <TimedButton disabled={props.characterTask} label={item.name} taskData={item} timer={item.timer} clickFunc={() => handleTask(item.name)} setCharacterTask={props.setCharacterTask}/>
+                <TimedButton key={item.id} disabled={props.characterTask} label={item.name} taskData={item} timer={item.timer} clickFunc={() => handleTask(item.name)} setCharacterTask={props.setCharacterTask}/>
             )
         }
 
