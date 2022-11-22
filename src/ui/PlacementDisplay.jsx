@@ -7,12 +7,14 @@ const PlacementDisplay = (props) => {
         props.setSelectableToPlace(e.currentTarget.getAttribute('data-item-name'))
     }
 
+    console.log(props.placeables)
+
 
     const listItems = props.placeables.map((item, index) =>
     
     <div onClick={handleClick} key={index} data-item-name={item.name} className='button button-secondary button-fit justify-between py-2 px-8 mb-4'>
         <div className="w-[150px]">{item.name}</div>
-        <div>x5</div>
+        <div>x{item.quantity}</div>
         
     </div>
 

@@ -1,21 +1,23 @@
 import { Fragment, useState, Suspense } from "react"
 
-
 import { Canvas} from '@react-three/fiber'
 import Modal from 'react-modal';
-import LocationDisplay from "../ui/LocationDisplay";
+
 import Narrator from "./Narrator";
+import LocationDisplay from "../ui/LocationDisplay";
 import ActionDisplay from "../ui/ActionDisplay";
 import CharacterDisplay from "../ui/CharacterDisplay";
 import PlacementDisplay from "../ui/PlacementDisplay";
+import ModalSelector from "../comps/modals/ModalSelector";
 
 import House from '../scenes/House';
 import Village from '../scenes/Village';
 import World from '../scenes/World';
 import Create from '../scenes/Create';
-import { getTask } from "../api/tasks";
 
-import ModalSelector from "../comps/modals/ModalSelector";
+import { getTask } from "../api/tasks";
+import { ManageCharacter2 } from "../api/character";
+
 
 function Loading() {
     return (
@@ -33,104 +35,7 @@ function Loading() {
     );
 }
 
-const ITEMTYPES = ['general', 'placeable', 'weapon']
-
-const GENERAL = {
-    name: 'a general item',
-    quantity: 1,
-    type: 'general',
-    id: 1
-}
-
-const placeable = {
-    name: 'a placeablepable item',
-    quantity: 1,
-    type: 'placeable',
-    id: 2
-}
-
-const CHARACTER = {
-    name: 'kotch thrustwood',
-    task: false,
-    inventory: [],
-    placement: [
-        'fire place'
-    ],
-    recipes: [
-        {   
-            id: 1,
-            name: 'fireplace',
-            required: [
-                {name: 'wood', quantity: 1}
-            ],
-            quantity: 1,
-            type: 'placeable',
-            craftedId: 5
-        },
-        {   
-            id: 2,
-            name: 'sharp stick',
-            required: [
-                {name: 'wood', quantity: 1}
-            ],
-            quantity: 1,
-            type: 'weapon',
-            craftedId: 6
-        },
-        {   
-            id: 3,
-            name: 'shelter',
-            required: [
-                {name: 'wood', quantity: 1}
-            ],
-            quantity: 1,
-            type: 'placeable',
-            craftedId: 100
-        },
-        {   
-            id: 4,
-            name: 'workbench',
-            required: [
-                {name: 'wood', quantity: 1}
-            ],
-            quantity: 1,
-            type: 'placeable',
-            craftedId: 200
-        },
-        {   
-            id: 5,
-            name: 'smokehouse',
-            required: [
-                {name: 'wood', quantity: 1}
-            ],
-            quantity: 1,
-            type: 'placeable',
-            craftedId: 300
-        },
-        {   
-            id: 6,
-            name: 'tannery',
-            required: [
-                {name: 'wood', quantity: 1}
-            ],
-            quantity: 1,
-            type: 'placeable',
-            craftedId: 400
-        },
-        {   
-            id: 7,
-            name: 'trading post',
-            required: [
-                {name: 'wood', quantity: 1}
-            ],
-            quantity: 1,
-            type: 'placeable',
-            craftedId: 500
-        },
-    ],
-    carrying: []
-}
-
+// location task data
 const HOUSE = {
     tasks: [
     ]
@@ -148,7 +53,7 @@ const WORLD = {
 
 const WORLDLOCATIONS = [
     {
-        name: `${CHARACTER.name}'s camp`,
+        name: `players's camp`,
         type: 'camp',
         tasks: [],
         secrets: [],
@@ -194,6 +99,7 @@ const WORLDLOCATIONS = [
     }
 ]
 
+// clickable objects in 3d space
 const SELECTABLES = [
     {
         name: 'fireplace',
@@ -201,7 +107,8 @@ const SELECTABLES = [
         tasks: [],
         // secrets: [],
         color: 'rgb(30, 94, 225)',
-        description: 'A basic fire ring.'
+        description: 'A basic fire ring.',
+        quantity: 1
     },
     {
         name: 'shelter',
@@ -209,171 +116,33 @@ const SELECTABLES = [
         tasks: [],
         // secrets: [],
         color: 'rgb(30, 94, 225)',
-        description: 'A Basic sleeping area and protection from the elements.'
+        description: 'A Basic sleeping area and protection from the elements.',
+        quantity: 1
     }
 ]
 
-const MESSAGETEMPLATE = {message: 'the message', type:'general'}
+// const MESSAGETEMPLATE = {message: 'the message', type:'general'}
 
-class ManageCharacter {
-    constructor(data) {
-      this.character = data;
-    }
-    character() {
-      return this.character
-    }
-    name() {
-    return this.character.name
-    }
-    inventory() {
-        return this.character.inventory
-      }
-      carrying() {
-        return this.character.carrying
-      }
-      recipes() {
-        return this.character.recipes
-      }
-      getPlaceables() {
-        let result = []
-        this.character.inventory.forEach(invItem => {
-            if (invItem.type === 'placeable') {
-                result.push(invItem)
-            }
-        })
-
-        return result;
-
-      }
-      craftItem(craftableName) {
-        let hasMaterials = false;
-        let craftedItem;
-        this.character.recipes.forEach(craft => {
-            if (craft.name === craftableName) {
-                // check if craft is possible
-                craft.required.forEach(reqItem => {
-                    this.character.inventory.forEach(invItem => {
-                        if (reqItem.name === invItem.name && invItem.quantity >= reqItem.quantity) {
-                            hasMaterials = true
-                        }
-                    })
-                })
-                if (!hasMaterials) {
-                    return false;
-                }
-                // craft item
-                craftedItem = {name: craft.name, quantity: craft.quantity, type: craft.type, id: craft.craftedId}
-                // remove items from inventory
-                craft.required.forEach(reqItem => {
-                    this.character.inventory.forEach(invItem => {
-                        if (reqItem.name === invItem.name) {
-                            invItem.quantity -= reqItem.quantity
-                        }
-                    })
-                })
-                // add crafted item to inventory
-                this.addToInv([craftedItem])
-                
-                
-            }
-        })
-        if (!hasMaterials) {
-            return false;
-        }
-        return craftedItem;
-      }
-
-    addToInv(items) {
-        
-        items.forEach(item => {
-            let inv = this.inventory()
-
-            let found = false;
-            inv.forEach(invItem => {
-                if (invItem.name === item.name) {
-                    invItem.quantity += item.quantity
-                    found = true
-                } 
-            })
-
-            if (!found) {
-                inv.push(item)
-            }
-
-        })
-    }
-
-    removeFromInv(items) {
-        let inv = this.character.inventory
-        items.forEach(item => {
-            inv.forEach((invItem, index) => {
-                
-                if (invItem.name === item.name && invItem.quantity >= invItem.quantity) {
-                    invItem.quantity -= item.quantity
-
-                    if (!invItem.quantity) {
-                        inv.splice(index, 1)
-                    }
-                }
-
-                
-            })
-        })
-    }
-
-    addToCarrying(items) {
-        let carrying = this.character.carrying
-        items.forEach(item => {
-            let found = false;
-            carrying.forEach(carryingItem => {
-                
-                if (carryingItem.name === item.name) {
-                    carryingItem.quantity += item.quantity
-                    found = true
-                } 
-            })
-            if (!found) {
-                carrying.push(item)
-            }
-        })
-    }
-
-    removeFromCarrying(items) {
-        let carrying = this.character.carrying
-        items.forEach(item => {
-            carrying.forEach((carryingItem, index) => {
-                
-                if (carryingItem.name === item.name && carryingItem.quantity >= carryingItem.quantity) {
-                    carryingItem.quantity -= item.quantity
-
-                    if (!carryingItem.quantity) {
-                        carrying.splice(index, 1)
-                    }
-                }
-
-                
-            })
-        })
-    }
-}
+let tempmessages = [
+    {message: 'tester tester tester tester tester tester tester tester tester tester tester tester tester tester tester', type: 'general'},
+    {message: 'tester tester tester2', type: 'general'},
+    {message: 'tester tester tester3', type: 'general'},
+    {message: 'tester tester tester4', type: 'general'},
+]
 
 const Engine = (props) => {
 
     const [sceneName, setSceneName] = useState('create');
-    const [character, setCharacter] = useState(new ManageCharacter(CHARACTER));
-    const [characterTask, setCharacterTask] = useState(CHARACTER.task)
+    const [character, setCharacter] = useState(new ManageCharacter2());
+    const [characterTask, setCharacterTask] = useState(character.task())
+
     const [placeables, setPlaceables] = useState([])
     const [canPlace, setCanPlace] = useState(false)
     const [placedItems, setPlacedItems] = useState([])
     const [selectedMesh, setSelectedMesh] = useState({})
-    const [modalIsOpen, setIsOpen] = useState(false);
     const [selectableToPlace, setSelectableToPlace] = useState(null)
-    let tempmessages = [
-        {message: 'tester tester tester tester tester tester tester tester tester tester tester tester tester tester tester', type: 'general'},
-        {message: 'tester tester tester2', type: 'general'},
-        {message: 'tester tester tester3', type: 'general'},
-        {message: 'tester tester tester4', type: 'general'},
-    ]
+
+    const [modalIsOpen, setIsOpen] = useState(false);
 
     const [narratorMessage, setNarratorMessage] = useState(tempmessages)
 
@@ -458,7 +227,7 @@ const Engine = (props) => {
                         <CharacterDisplay character={character} setPlaceables={setPlaceables} characterTask={characterTask} />
                         <LocationDisplay ChangeScene={ChangeScene}/>
                         
-                        <ActionDisplay setPlaceables={setPlaceables} sendMessageToNarrator={sendMessageToNarrator} location={SURROUNDING} character={character} characterTask={characterTask} setCharacterTask={setCharacterTask}/>
+                        <ActionDisplay handleTask={handleTask} setPlaceables={setPlaceables} sendMessageToNarrator={sendMessageToNarrator} location={SURROUNDING} character={character} characterTask={characterTask} setCharacterTask={setCharacterTask}/>
                         <PlacementDisplay character={character} placeables={placeables} setCanPlace={setCanPlace} setSelectableToPlace={setSelectableToPlace}/>
                     </div>
                 );
@@ -471,7 +240,7 @@ const Engine = (props) => {
                         <CharacterDisplay character={character} setPlaceables={setPlaceables} characterTask={characterTask}/>
                         <LocationDisplay ChangeScene={ChangeScene}/>
                         
-                        <ActionDisplay setPlaceables={setPlaceables} sendMessageToNarrator={sendMessageToNarrator} location={WORLD} character={character} characterTask={characterTask} setCharacterTask={setCharacterTask}/>
+                        <ActionDisplay handleTask={handleTask} setPlaceables={setPlaceables} sendMessageToNarrator={sendMessageToNarrator} location={WORLD} character={character} characterTask={characterTask} setCharacterTask={setCharacterTask}/>
                         
 
                     </div>
@@ -490,7 +259,7 @@ const Engine = (props) => {
         character.addToInv(loot)
         loot.forEach(item => {
             if (item.type === 'placeable') {
-                setPlaceables(placeables => [...placeables, {name: item.name}])
+                setPlaceables(placeables => [...placeables, item])
             }
         })
         setCharacterTask(false)
