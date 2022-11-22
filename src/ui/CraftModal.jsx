@@ -5,13 +5,13 @@ const CraftModal = (props) => {
     let handleAction = (craftableName) => {
         let crafted = props.character.craftItem(craftableName)
         // add to placeables
-        if (crafted) {
+        if (crafted.type === 'placeable') {
             props.setPlaceables(placeables => [...placeables, {name: craftableName}])
         }
         
     }
 
-    const listItems = props.craftables.map((item, index) =>
+    const listItems = props.recipes.map((item, index) =>
     <div className='flex' key={index}>
         <div onClick={() => handleAction(item.name)} className='button button-long mb-4'>
             {item.name}

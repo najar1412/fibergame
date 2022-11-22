@@ -44,7 +44,7 @@ const CharacterDisplay = (props) => {
             onRequestClose={closeModal}
             contentLabel="Example Modal"
         >
-            <CraftModal closeModal={closeModal} character={props.character} craftables={props.character.craftables()} setPlaceables={props.setPlaceables}/>
+            <CraftModal closeModal={closeModal} character={props.character} recipes={props.character.recipes()} setPlaceables={props.setPlaceables}/>
         </Modal>
             break;
             case 'build':

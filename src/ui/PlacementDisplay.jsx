@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-const AwaitingPlacement = (props) => {
+const PlacementDisplay = (props) => {
 
     function handleClick(e) {
         props.setCanPlace(true)
@@ -33,4 +33,4 @@ const AwaitingPlacement = (props) => {
 </div>
 }
 
-export default AwaitingPlacement;
+export default PlacementDisplay;

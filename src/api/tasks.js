@@ -30,22 +30,28 @@ let NONGENERAL = PLACEABLELOOTTABLE.concat(WEAPONLOOTTABLE, ARMORLOOTTABLE, TOOL
 
 function getLoot(table=GENERALLOOTTABLE, amount=0, rareAmount=1) {
     if (!amount) {
-        // get general items
+        /* // number of items to get
         let itemsToReturn = Math.floor(Math.random() * 2) + 1;
         let items = []
 
+        // get general items
+        let lootable = Object.assign([], GENERALLOOTTABLE)
         for (let i=0;i<itemsToReturn;i++) {
-            items.push(table[Math.floor(Math.random()*table.length)])
+            items.push(lootable[Math.floor(Math.random()*lootable.length)])
         }
 
         // get rare items
         let extraLootChance = Math.random()
         if (extraLootChance < .2) {
             for (let i=0;i<rareAmount;i++) {
-                items.push(NONGENERAL[Math.floor(Math.random()*table.length)])
+                items.push(NONGENERAL[Math.floor(Math.random()*NONGENERAL.length)])
             }
             
         }
+ */
+        let items = []
+        items.push(GENERALLOOTTABLE[Math.floor(Math.random()*GENERALLOOTTABLE.length)])
+
 
         return items;
     }
@@ -53,6 +59,8 @@ function getLoot(table=GENERALLOOTTABLE, amount=0, rareAmount=1) {
 
 
 function search () {
+    console.log('cearch')
+    // let newTable = 
     return getLoot(GENERALLOOTTABLE);
 }
 
@@ -77,4 +85,4 @@ const getTask = (taskName) => {
 }
 
 
-export {explore, getTask};
+export {getTask};

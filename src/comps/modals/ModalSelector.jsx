@@ -1,5 +1,5 @@
-import LocationModal from "./modals/LocationModal";
-import SelectableModal from "./modals/SelectableModal";
+import LocationModal from "./LocationModal";
+import SelectableModal from "./SelectableModal";
 
 const ModalSelector = (props) => {
 

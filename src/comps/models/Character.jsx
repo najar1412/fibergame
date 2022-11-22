@@ -37,7 +37,7 @@ const Character = (props) => {
     });
 
     return <group ref={group} position={[-5, 0, 0]}>
-    <mesh position={[0, .5, 0]}>
+    <mesh position={[0, .5, 0]} castShadow>
       <boxGeometry />
       <meshStandardMaterial/>
     </mesh>

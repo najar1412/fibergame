@@ -1,23 +1,22 @@
-import { Fragment, useState, useEffect, useRef } from "react"
-import { useFrame, useThree } from '@react-three/fiber';
-import { Sampler, PerspectiveCamera, useGLTF } from '@react-three/drei'
+import { Fragment, useEffect, useRef } from "react"
+
+import { useFrame } from '@react-three/fiber';
+import { Sampler, PerspectiveCamera, useGLTF} from '@react-three/drei'
 import IsoControls from "../engine/controls/IsoControls";
-import { useLoader } from '@react-three/fiber'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+
 import rockLg from '../models/rock_lg.glb'
 import rockMd from '../models/rock_md.glb'
 import rockSm from '../models/rock_sm.glb'
 
-import Character from "../3dComps/Character";
+import Character from "../comps/models/Character";
+import Fireplace from "../comps/models/Fireplace";
+import Shelter from "../comps/models/Shelter";
 
-
-import Lighting from "./Lighting";
 
 const deg2rad = degrees => degrees * (Math.PI / 180);
 
 const Village = (props) => {
-
-
+  
     useEffect(() => {
     }, [])
 
@@ -27,7 +26,9 @@ const Village = (props) => {
 
     function placeObject(e) {
       if (props.canPlace) {
+        console.log(props.selectableToPlace)
         let selectableData = getSelectableData(props.selectableToPlace)
+        
         selectableData.position = e.point
 
         props.setPlacedItems(placedItems => [...placedItems, selectableData])
@@ -44,7 +45,7 @@ const Village = (props) => {
       let mesh = gltf.nodes.Object001
       return (
         <>
-          <primitive object={mesh.geometry}/>
+          <primitive object={mesh.geometry} receiveShadow castShadow/>
         </>
       );
     };
@@ -54,7 +55,7 @@ const Village = (props) => {
       let mesh = gltf.nodes.Object002
       return (
         <>
-          <primitive object={mesh.geometry}/>
+          <primitive object={mesh.geometry} receiveShadow castShadow/>
         </>
       );
     };
@@ -64,7 +65,7 @@ const Village = (props) => {
       let mesh = gltf.nodes.RockSm
       return (
         <>
-          <primitive object={mesh.geometry}/>
+          <primitive object={mesh.geometry} receiveShadow castShadow/>
         </>
       );
     };
@@ -78,7 +79,6 @@ const Village = (props) => {
   function getSelectableData(name) {
     let item;
     props.selectables.forEach(selectable => {
-      
       if (selectable.name === name) {
         item = selectable
       }
@@ -87,20 +87,31 @@ const Village = (props) => {
     return item
   }
 
-    const listItems = props.placedItems.map((item, index) =>
-    <mesh key={index} name={item.name} selectableData={item} onClick={selectMesh} position={[item.position.x, item.position.y + 0.1, item.position.z]}>
-        <boxGeometry args={[.2, .2, .2]} />
-        <meshStandardMaterial color="red"/>
-      </mesh>
+    const listItems = props.placedItems.map((item, index) => {
+      switch(item.name) {
+        case 'fireplace':
+          return <Fireplace item={item} key={index} selectMesh={selectMesh}/>
+          break;
+        case 'shelter':
+          return <Shelter item={item} key={index} selectMesh={selectMesh}/>
+      }
+      
+    }
+    
     );
 
     // const group = useRef();
     const groundGroup = useRef();
+    const groundPlane = useRef();
+    const sunCtrl = useRef();
+    let sunPosition = [0,150, 0]
     // groundGroup.current.rotation.x= -Math.PI / 2
 
     useFrame(() => {
       // setup 3d objects
       groundGroup.current.rotation.x = deg2rad(-90);
+      sunCtrl.current.rotation.z += 0.0001;
+
 
       // init idling
       // group.current.position.z += 0.006;
@@ -108,22 +119,28 @@ const Village = (props) => {
   
     return <Fragment>
 
-      <Lighting />
+      <group ref={sunCtrl}>
+        <directionalLight castShadow intensity={0.3} position={sunPosition} shadow-mapSize-height={256} shadow-mapSize-width={256} />
+      </group>
+      
+      <ambientLight intensity={0.02} />
+
       <PerspectiveCamera makeDefault />
       <IsoControls screenSpacePanning={true} />
 
     <group ref={groundGroup}>
-      <Sampler
-        count={20} // Number of samples
-        >
-        <mesh onClick={(e) => placeObject(e)}>
+      <mesh ref={groundPlane} onClick={(e) => placeObject(e)} receiveShadow>
           <planeGeometry args={[100, 100]}/>
           <meshStandardMaterial color="rgb(225, 249, 226)"  />
         </mesh>
 
-      
 
-      <instancedMesh args={[null, null, 1_000]}>
+      <Sampler
+        count={10} // Number of samples
+        mesh={groundPlane}
+        >
+      
+      <instancedMesh args={[null, null, 1_000]} castShadow>
         <RockLgModel />
         <meshStandardMaterial/>
       </instancedMesh>
@@ -131,27 +148,21 @@ const Village = (props) => {
 
     <Sampler
       count={100} // Number of samples
+      mesh={groundPlane}
       >
-      <mesh>
-        <planeGeometry args={[100, 100]}/>
-        <meshStandardMaterial color="rgb(225, 249, 226)"  />
-      </mesh>
 
-      <instancedMesh args={[null, null, 1_000]}>
+      <instancedMesh args={[null, null, 1_000]} castShadow>
         <RockMdModel />
         <meshStandardMaterial/>
       </instancedMesh>
     </Sampler>
 
     <Sampler
-      count={200} // Number of samples
+      count={300} // Number of samples
+      mesh={groundPlane}
       >
-      <mesh>
-        <planeGeometry args={[100, 100]}/>
-        <meshStandardMaterial color="rgb(225, 249, 226)"  />
-      </mesh>
 
-      <instancedMesh args={[null, null, 1_000]}>
+      <instancedMesh args={[null, null, 1_000]} castShadow>
         <RockSmModel />
         <meshStandardMaterial/>
       </instancedMesh>

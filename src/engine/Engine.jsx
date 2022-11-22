@@ -1,13 +1,13 @@
-import { Fragment, useState, useEffect, Suspense } from "react"
+import { Fragment, useState, Suspense } from "react"
 
 
 import { Canvas} from '@react-three/fiber'
 import Modal from 'react-modal';
 import LocationDisplay from "../ui/LocationDisplay";
-import ActionMenu from "../ui/ActionMenu";
+import Narrator from "./Narrator";
+import ActionDisplay from "../ui/ActionDisplay";
 import CharacterDisplay from "../ui/CharacterDisplay";
-import CarryingDisplay from "../ui/CarryingDisplay";
-import AwaitingPlacement from "../ui/AwaitingPlacement";
+import PlacementDisplay from "../ui/PlacementDisplay";
 
 import House from '../scenes/House';
 import Village from '../scenes/Village';
@@ -15,7 +15,7 @@ import World from '../scenes/World';
 import Create from '../scenes/Create';
 import { getTask } from "../api/tasks";
 
-import ModalSelector from "../3dComps/ModalSelector";
+import ModalSelector from "../comps/modals/ModalSelector";
 
 function Loading() {
     return (
@@ -33,7 +33,7 @@ function Loading() {
     );
 }
 
-const ITEMTYPES = ['general', 'drop']
+const ITEMTYPES = ['general', 'placeable', 'weapon']
 
 const GENERAL = {
     name: 'a general item',
@@ -42,10 +42,10 @@ const GENERAL = {
     id: 1
 }
 
-const DROP = {
-    name: 'a droppable item',
+const placeable = {
+    name: 'a placeablepable item',
     quantity: 1,
-    type: 'drop',
+    type: 'placeable',
     id: 2
 }
 
@@ -56,17 +56,77 @@ const CHARACTER = {
     placement: [
         'fire place'
     ],
-    craftables: [
+    recipes: [
         {   
             id: 1,
             name: 'fireplace',
             required: [
-                {name: 'wood', quantity: 2}
+                {name: 'wood', quantity: 1}
             ],
             quantity: 1,
-            type: 'drop',
-            craftedId: 3
-        }
+            type: 'placeable',
+            craftedId: 5
+        },
+        {   
+            id: 2,
+            name: 'sharp stick',
+            required: [
+                {name: 'wood', quantity: 1}
+            ],
+            quantity: 1,
+            type: 'weapon',
+            craftedId: 6
+        },
+        {   
+            id: 3,
+            name: 'shelter',
+            required: [
+                {name: 'wood', quantity: 1}
+            ],
+            quantity: 1,
+            type: 'placeable',
+            craftedId: 100
+        },
+        {   
+            id: 4,
+            name: 'workbench',
+            required: [
+                {name: 'wood', quantity: 1}
+            ],
+            quantity: 1,
+            type: 'placeable',
+            craftedId: 200
+        },
+        {   
+            id: 5,
+            name: 'smokehouse',
+            required: [
+                {name: 'wood', quantity: 1}
+            ],
+            quantity: 1,
+            type: 'placeable',
+            craftedId: 300
+        },
+        {   
+            id: 6,
+            name: 'tannery',
+            required: [
+                {name: 'wood', quantity: 1}
+            ],
+            quantity: 1,
+            type: 'placeable',
+            craftedId: 400
+        },
+        {   
+            id: 7,
+            name: 'trading post',
+            required: [
+                {name: 'wood', quantity: 1}
+            ],
+            quantity: 1,
+            type: 'placeable',
+            craftedId: 500
+        },
     ],
     carrying: []
 }
@@ -106,7 +166,7 @@ const WORLDLOCATIONS = [
         description: 'This large town is located in the mountains and looks very old-fashioned.  It is best-known for the produce it exports and its fishing spots.  Also, there is an old ceremonial site nearby.'
     },
     {
-        name: "Choad Featherwings's camp",
+        name: "Choad Featherwing's camp using a longer name to test string lengths",
         type: 'player camp',
         tasks: [{id: 2, name: 'explore', timer: 100000, verb: 'exploring', location: "Choad Featherwing's camp"}, {id: 3, name: 'raid', timer: 10000, verb: 'raiding', location: "Choad Featherwing's camp"}],
         secrets: [],
@@ -142,8 +202,18 @@ const SELECTABLES = [
         // secrets: [],
         color: 'rgb(30, 94, 225)',
         description: 'A basic fire ring.'
+    },
+    {
+        name: 'shelter',
+        type: 'selectable',
+        tasks: [],
+        // secrets: [],
+        color: 'rgb(30, 94, 225)',
+        description: 'A Basic sleeping area and protection from the elements.'
     }
 ]
+
+const MESSAGETEMPLATE = {message: 'the message', type:'general'}
 
 class ManageCharacter {
     constructor(data) {
@@ -161,13 +231,13 @@ class ManageCharacter {
       carrying() {
         return this.character.carrying
       }
-      craftables() {
-        return this.character.craftables
+      recipes() {
+        return this.character.recipes
       }
       getPlaceables() {
         let result = []
         this.character.inventory.forEach(invItem => {
-            if (invItem.type === 'drop') {
+            if (invItem.type === 'placeable') {
                 result.push(invItem)
             }
         })
@@ -177,10 +247,10 @@ class ManageCharacter {
       }
       craftItem(craftableName) {
         let hasMaterials = false;
-        this.character.craftables.forEach(craft => {
+        let craftedItem;
+        this.character.recipes.forEach(craft => {
             if (craft.name === craftableName) {
                 // check if craft is possible
-                
                 craft.required.forEach(reqItem => {
                     this.character.inventory.forEach(invItem => {
                         if (reqItem.name === invItem.name && invItem.quantity >= reqItem.quantity) {
@@ -191,7 +261,8 @@ class ManageCharacter {
                 if (!hasMaterials) {
                     return false;
                 }
-                let craftedItem = {name: craft.name, quantity: craft.quantity, type: craft.type, id: craft.craftedId}
+                // craft item
+                craftedItem = {name: craft.name, quantity: craft.quantity, type: craft.type, id: craft.craftedId}
                 // remove items from inventory
                 craft.required.forEach(reqItem => {
                     this.character.inventory.forEach(invItem => {
@@ -203,28 +274,32 @@ class ManageCharacter {
                 // add crafted item to inventory
                 this.addToInv([craftedItem])
                 
+                
             }
         })
         if (!hasMaterials) {
             return false;
         }
-        return true;
+        return craftedItem;
       }
 
     addToInv(items) {
-        let inv = this.character.inventory
+        
         items.forEach(item => {
+            let inv = this.inventory()
+
             let found = false;
             inv.forEach(invItem => {
-                
                 if (invItem.name === item.name) {
                     invItem.quantity += item.quantity
                     found = true
                 } 
             })
+
             if (!found) {
                 inv.push(item)
             }
+
         })
     }
 
@@ -293,6 +368,21 @@ const Engine = (props) => {
     const [selectedMesh, setSelectedMesh] = useState({})
     const [modalIsOpen, setIsOpen] = useState(false);
     const [selectableToPlace, setSelectableToPlace] = useState(null)
+    let tempmessages = [
+        {message: 'tester tester tester tester tester tester tester tester tester tester tester tester tester tester tester', type: 'general'},
+        {message: 'tester tester tester2', type: 'general'},
+        {message: 'tester tester tester3', type: 'general'},
+        {message: 'tester tester tester4', type: 'general'},
+    ]
+
+    const [narratorMessage, setNarratorMessage] = useState(tempmessages)
+
+
+      function sendMessageToNarrator(message) {
+        message.id = narratorMessage.length + 1
+        setNarratorMessage(messages => [message, ...messages])
+      }
+
   
     function openModal() {
       setIsOpen(true);
@@ -357,30 +447,32 @@ const Engine = (props) => {
                     <div className='absolute top-0 z-10 flex flex-col h-screen w-screen pointer-events-none  p-8'>
                         <LocationDisplay ChangeScene={ChangeScene}/>
                         <CharacterDisplay character={character} setPlaceables={setPlaceables} characterTask={characterTask}/>
-                        <ActionMenu location={HOUSE} character={character}/>
+                        <ActionDisplay location={HOUSE} character={character}/>
                     </div>
                 );
                 break; */
             case 'village':
                 return (
                     <div className='absolute top-0 z-10 flex flex-col h-screen w-screen pointer-events-none p-8'>
+                        <Narrator narratorMessage={narratorMessage}/>
                         <CharacterDisplay character={character} setPlaceables={setPlaceables} characterTask={characterTask} />
                         <LocationDisplay ChangeScene={ChangeScene}/>
                         
-                        <ActionMenu location={SURROUNDING} character={character} characterTask={characterTask} setCharacterTask={setCharacterTask}/>
-                        <AwaitingPlacement character={character} placeables={placeables} setCanPlace={setCanPlace} setSelectableToPlace={setSelectableToPlace}/>
+                        <ActionDisplay setPlaceables={setPlaceables} sendMessageToNarrator={sendMessageToNarrator} location={SURROUNDING} character={character} characterTask={characterTask} setCharacterTask={setCharacterTask}/>
+                        <PlacementDisplay character={character} placeables={placeables} setCanPlace={setCanPlace} setSelectableToPlace={setSelectableToPlace}/>
                     </div>
                 );
                 break;
             case 'world':
                 return (
                     <div className='absolute top-0 z-10 flex flex-col h-screen w-screen pointer-events-none p-8'>
+                        <Narrator narratorMessage={narratorMessage}/>
+
                         <CharacterDisplay character={character} setPlaceables={setPlaceables} characterTask={characterTask}/>
                         <LocationDisplay ChangeScene={ChangeScene}/>
                         
-                        <ActionMenu location={WORLD} character={character} characterTask={characterTask} setCharacterTask={setCharacterTask}/>
-                        {/* <RagDollDisplay />
-                        <CarryingDisplay character={character}/> */}
+                        <ActionDisplay setPlaceables={setPlaceables} sendMessageToNarrator={sendMessageToNarrator} location={WORLD} character={character} characterTask={characterTask} setCharacterTask={setCharacterTask}/>
+                        
 
                     </div>
                 );
@@ -391,17 +483,21 @@ const Engine = (props) => {
 
     }
 
-    function handleTask(taskName) {
+    function handleTask(task) {
         
-        let task = getTask(taskName)
-        let loot = task()
+        let taskFunc = getTask(task.name)
+        let loot = taskFunc()
         character.addToInv(loot)
+        loot.forEach(item => {
+            if (item.type === 'placeable') {
+                setPlaceables(placeables => [...placeables, {name: item.name}])
+            }
+        })
         setCharacterTask(false)
+        sendMessageToNarrator({type: 'found', items:loot, activity: task.location})
 
     }
 
-    useEffect(() => {
-    }, [])
 
     return <Fragment>
 
@@ -409,7 +505,7 @@ const Engine = (props) => {
 
     <div id="canvas-container" className="fixed top-0 h-full w-full">
 
-    <Canvas>
+    <Canvas shadows>
         <Suspense fallback={<Loading />}>
             {SceneSelector(sceneName)}
         </Suspense>
