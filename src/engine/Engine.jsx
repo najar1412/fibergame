@@ -182,9 +182,9 @@ let tempmessages = [
       "tester tester tester tester tester tester tester tester tester tester tester tester tester tester tester",
     type: "general",
   },
-  { message: "tester tester tester2", type: "general" },
-  { message: "tester tester tester3", type: "general" },
-  { message: "tester tester tester4", type: "general" },
+  { message: "tester tester tester2", type: "general", id: 1 },
+  { message: "tester tester tester3", type: "general", id: 2 },
+  { message: "tester tester tester4", type: "general", id: 3 },
 ];
 
 const Engine = (props) => {
@@ -200,11 +200,11 @@ const Engine = (props) => {
 
   const [modalIsOpen, setIsOpen] = useState(false);
 
-  const [narratorMessage, setNarratorMessage] = useState(tempmessages);
+  const [narratorMessage, setNarratorMessage] = useState([]);
 
   function sendMessageToNarrator(message) {
-    message.id = narratorMessage.length + 1;
-    setNarratorMessage((messages) => [message, ...messages]);
+    const copyMessage = JSON.parse(JSON.stringify(message));
+    setNarratorMessage((messages) => [copyMessage, ...messages]);
   }
 
   function openModal() {
@@ -341,6 +341,17 @@ const Engine = (props) => {
     }
   }
 
+  function makeid(length) {
+    var result = "";
+    var characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  }
+
   function handleTask(task) {
     let taskFunc = getTask(task.name);
     let loot = taskFunc();
@@ -355,6 +366,7 @@ const Engine = (props) => {
       type: "found",
       items: loot,
       activity: task.location,
+      id: makeid(5),
     });
   }
 

@@ -2,7 +2,7 @@ const CHARACTER = {
   name: "kotch thrustwood",
   task: false,
   inventory: [],
-  placement: ["fire place"],
+  placement: [],
   recipes: [
     {
       id: 1,
@@ -66,7 +66,7 @@ const CHARACTER = {
 
 class ManageCharacter2 {
   constructor() {
-    this.characterData = CHARACTER;
+    this.characterData = JSON.parse(JSON.stringify(CHARACTER));
   }
   get character() {
     return this.parseCharacter();
@@ -104,10 +104,10 @@ class ManageCharacter2 {
   craftItem(craftableName) {
     let hasMaterials = false;
     let craftedItem;
-    this.characterData.recipes.forEach((craft) => {
-      if (craft.name === craftableName) {
+    this.characterData.recipes.forEach((recipe) => {
+      if (recipe.name === craftableName) {
         // check if craft is possible
-        craft.required.forEach((reqItem) => {
+        recipe.required.forEach((reqItem) => {
           this.characterData.inventory.forEach((invItem) => {
             if (
               reqItem.name === invItem.name &&
@@ -122,20 +122,13 @@ class ManageCharacter2 {
         }
         // craft item
         craftedItem = {
-          name: craft.name,
-          quantity: craft.quantity,
-          type: craft.type,
-          id: craft.craftedId,
+          name: recipe.name,
+          quantity: recipe.quantity,
+          type: recipe.type,
+          id: recipe.craftedId,
         };
         // remove items from inventory
-        craft.required.forEach((reqItem) => {
-          this.characterData.inventory.forEach((invItem) => {
-            if (reqItem.name === invItem.name) {
-              invItem.quantity -= reqItem.quantity;
-            }
-          });
-        });
-        // add crafted item to inventory
+        this.removeFromInv(recipe.required);
         this.addToInv([craftedItem]);
       }
     });
@@ -164,19 +157,14 @@ class ManageCharacter2 {
   }
 
   removeFromInv(items) {
-    console.log(items);
     let inv = this.characterData.inventory;
     items.forEach((item) => {
       inv.forEach((invItem, index) => {
         if (invItem.name === item.name) {
-          console.log("found" + invItem.name);
-          console.log(invItem.quantity, item.quantity);
           if (invItem.quantity >= item.quantity) {
-            console.log("reducing quantity");
             invItem.quantity -= item.quantity;
 
             if (invItem.quantity === 0) {
-              console.log("removing from inv");
               inv.splice(index, 1);
             }
           }

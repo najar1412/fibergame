@@ -6,8 +6,6 @@ const PlacementDisplay = (props) => {
     props.setSelectableToPlace(e.currentTarget.getAttribute("data-item-name"));
   }
 
-  console.log(props.placeables);
-
   const listItems = props.placeables.map((item, index) => (
     <div
       onClick={handleClick}

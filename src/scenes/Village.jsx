@@ -25,7 +25,6 @@ const Village = (props) => {
 
   function placeObject(e) {
     if (props.canPlace) {
-      console.log(props.selectableToPlace);
       let selectableData = getSelectableData(props.selectableToPlace);
 
       selectableData.position = e.point;

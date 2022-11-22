@@ -1,13 +1,13 @@
 import { getLoot } from "./items";
 
 function search() {
-  console.log("cearch");
-  return getLoot();
+  let loot = getLoot();
+  return loot;
 }
 
 function explore() {
-  console.log("explore");
-  return getLoot();
+  let loot = getLoot();
+  return loot;
 }
 
 let allTasks = {

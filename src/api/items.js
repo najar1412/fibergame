@@ -31,34 +31,43 @@ let NONGENERAL = PLACEABLELOOTTABLE.concat(
   BAGLOOTTABLE
 );
 
+function copyObject(item) {
+  return JSON.parse(JSON.stringify(item));
+}
+
 function getLoot(amount = 0, rareAmount = 1) {
-  if (!amount) {
-    /* // number of items to get
-        let itemsToReturn = Math.floor(Math.random() * 2) + 1;
-        let items = []
+  // number of items to get
+  let itemsToReturn = Math.floor(Math.random() * 2) + 1;
+  let items = [];
 
-        // get general items
-        let lootable = Object.assign([], GENERALLOOTTABLE)
-        for (let i=0;i<itemsToReturn;i++) {
-            items.push(lootable[Math.floor(Math.random()*lootable.length)])
-        }
-
-        // get rare items
-        let extraLootChance = Math.random()
-        if (extraLootChance < .2) {
-            for (let i=0;i<rareAmount;i++) {
-                items.push(NONGENERAL[Math.floor(Math.random()*NONGENERAL.length)])
-            }
-            
-        }
- */
-    let items = [];
+  // get general items
+  let lootable = Object.assign([], GENERALLOOTTABLE);
+  for (let i = 0; i < itemsToReturn; i++) {
     items.push(
-      GENERALLOOTTABLE[Math.floor(Math.random() * GENERALLOOTTABLE.length)]
+      copyObject(lootable[Math.floor(Math.random() * lootable.length)])
     );
-
-    return items;
   }
+
+  // get rare items
+  let extraLootChance = Math.random();
+  if (extraLootChance < 0.2) {
+    for (let i = 0; i < rareAmount; i++) {
+      items.push(
+        copyObject(NONGENERAL[Math.floor(Math.random() * NONGENERAL.length)])
+      );
+    }
+  }
+
+  /* let loot = JSON.parse(
+    JSON.stringify(
+      GENERALLOOTTABLE[Math.floor(Math.random() * GENERALLOOTTABLE.length)]
+    )
+  );
+
+  let items = [];
+  items.push(loot); */
+
+  return items;
 }
 
 export { getLoot };
