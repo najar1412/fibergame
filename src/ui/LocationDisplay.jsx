@@ -20,14 +20,14 @@ const LocationDisplay = (props) => {
       <div
         onClick={handleClick}
         data-scene-name="village"
-        className="location-button mr-4 sm:mr-12  cursor-pointer"
+        className="location-button mr-4 sm:mr-12  cursor-pointer font-bold"
       >
         <h1 className="pointer-events-none text-2xl uppercase">surroundings</h1>
       </div>
       <div
         onClick={handleClick}
         data-scene-name="world"
-        className="location-button cursor-pointer opacity-50"
+        className="location-button cursor-pointer font-bold opacity-50"
       >
         <h1 className="pointer-events-none text-2xl uppercase">world</h1>
       </div>

@@ -9,6 +9,8 @@ import ActionDisplay from "../ui/ActionDisplay";
 import CharacterDisplay from "../ui/CharacterDisplay";
 import PlacementDisplay from "../ui/PlacementDisplay";
 import ModalSelector from "../comps/modals/ModalSelector";
+import StatusBarDisplay from "../ui/StatusBarDisplay";
+import ButtonDisplay from "../ui/ButtonDisplay";
 
 import House from "../scenes/House";
 import Village from "../scenes/Village";
@@ -191,6 +193,9 @@ const Engine = (props) => {
   const [sceneName, setSceneName] = useState("create");
   const [character, setCharacter] = useState(new ManageCharacter2());
   const [characterTask, setCharacterTask] = useState(character.task());
+  const [health, setHealth] = useState(100);
+  const [hunger, setHunger] = useState(100);
+  const [thirst, setThirst] = useState(100);
 
   const [placeables, setPlaceables] = useState([]);
   const [canPlace, setCanPlace] = useState(false);
@@ -289,12 +294,18 @@ const Engine = (props) => {
         return (
           <div className="absolute top-0 z-10 flex flex-col h-screen w-screen pointer-events-none p-8">
             <Narrator narratorMessage={narratorMessage} />
-            <CharacterDisplay
+
+            <LocationDisplay ChangeScene={ChangeScene} />
+            <ButtonDisplay
               character={character}
               setPlaceables={setPlaceables}
+            />
+            <CharacterDisplay
+              character={character}
               characterTask={characterTask}
             />
-            <LocationDisplay ChangeScene={ChangeScene} />
+
+            <StatusBarDisplay health={health} hunger={hunger} thirst={thirst} />
 
             <ActionDisplay
               handleTask={handleTask}
@@ -313,23 +324,29 @@ const Engine = (props) => {
             />
           </div>
         );
+
       case "world":
         return (
           <div className="absolute top-0 z-10 flex flex-col h-screen w-screen pointer-events-none p-8">
             <Narrator narratorMessage={narratorMessage} />
 
-            <CharacterDisplay
+            <LocationDisplay ChangeScene={ChangeScene} />
+            <ButtonDisplay
               character={character}
               setPlaceables={setPlaceables}
+            />
+            <CharacterDisplay
+              character={character}
               characterTask={characterTask}
             />
-            <LocationDisplay ChangeScene={ChangeScene} />
+
+            <StatusBarDisplay health={health} hunger={hunger} thirst={thirst} />
 
             <ActionDisplay
               handleTask={handleTask}
               setPlaceables={setPlaceables}
               sendMessageToNarrator={sendMessageToNarrator}
-              location={WORLD}
+              location={SURROUNDING}
               character={character}
               characterTask={characterTask}
               setCharacterTask={setCharacterTask}
