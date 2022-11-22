@@ -1,15 +1,15 @@
-import React, { useRef } from 'react'
-import { extend, useFrame, useThree  } from '@react-three/fiber';
-import { MapControls } from '@react-three/drei'
+import React, { useRef } from "react";
+import { extend, useFrame, useThree } from "@react-three/fiber";
+import { MapControls } from "@react-three/drei";
 
-extend({ MapControls })
+extend({ MapControls });
 
 function IsoControls(props) {
-  const controls = useRef()
-  const { camera, gl } = useThree()
+  const controls = useRef();
+  const { camera, gl } = useThree();
   useFrame(() => {
-    controls.current.update()
-  })
+    controls.current.update();
+  });
   return (
     <MapControls
       ref={controls}
@@ -21,7 +21,7 @@ function IsoControls(props) {
       // maxPolarAngle={0}
       {...props}
     />
-  )
+  );
 }
 
-export default IsoControls
+export default IsoControls;

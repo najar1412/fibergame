@@ -1,36 +1,39 @@
 let GENERALLOOTTABLE = [
-    {name: 'wood', quantity: 1, type: 'general', id: 1},
-    {name: 'screw', quantity: 1, type: 'general', id: 2},
-    {name: 'copper', quantity: 1, type: 'general', id: 3},
-    {name: 'berries', quantity: 1, type: 'general', id: 4},
-]
+  { name: "wood", quantity: 1, type: "general", id: 1 },
+  { name: "screw", quantity: 1, type: "general", id: 2 },
+  { name: "copper", quantity: 1, type: "general", id: 3 },
+  { name: "berries", quantity: 1, type: "general", id: 4 },
+];
 
 let PLACEABLELOOTTABLE = [
-    {name: 'fireplace', quantity: 1, type: 'placeable', id: 5},
-]
+  { name: "fireplace", quantity: 1, type: "placeable", id: 5 },
+];
 
 let WEAPONLOOTTABLE = [
-    {name: 'sharp stick', quantity: 1, type: 'weapon', id: 6},
-    {name: 'copper sword', quantity: 1, type: 'weapon', id: 7},
-]
+  { name: "sharp stick", quantity: 1, type: "weapon", id: 6 },
+  { name: "copper sword", quantity: 1, type: "weapon", id: 7 },
+];
 
 let ARMORLOOTTABLE = [
-    {name: 'leather chest', quantity: 1, type: 'armor', id: 8},
-]
+  { name: "leather chest", quantity: 1, type: "armor", id: 8 },
+];
 
-let TOOLLOOTTABLE = [
-    {name: 'pick', quantity: 1, type: 'weapon', id: 9},
-]
+let TOOLLOOTTABLE = [{ name: "pick", quantity: 1, type: "weapon", id: 9 }];
 
 let BAGLOOTTABLE = [
-    {name: 'leather bag', quantity: 1, type: 'container', id: 10},
-]
+  { name: "leather bag", quantity: 1, type: "container", id: 10 },
+];
 
-let NONGENERAL = PLACEABLELOOTTABLE.concat(WEAPONLOOTTABLE, ARMORLOOTTABLE, TOOLLOOTTABLE, BAGLOOTTABLE)
+let NONGENERAL = PLACEABLELOOTTABLE.concat(
+  WEAPONLOOTTABLE,
+  ARMORLOOTTABLE,
+  TOOLLOOTTABLE,
+  BAGLOOTTABLE
+);
 
-function getLoot(amount=0, rareAmount=1) {
-    if (!amount) {
-        /* // number of items to get
+function getLoot(amount = 0, rareAmount = 1) {
+  if (!amount) {
+    /* // number of items to get
         let itemsToReturn = Math.floor(Math.random() * 2) + 1;
         let items = []
 
@@ -49,12 +52,13 @@ function getLoot(amount=0, rareAmount=1) {
             
         }
  */
-        let items = []
-        items.push(GENERALLOOTTABLE[Math.floor(Math.random()*GENERALLOOTTABLE.length)])
+    let items = [];
+    items.push(
+      GENERALLOOTTABLE[Math.floor(Math.random() * GENERALLOOTTABLE.length)]
+    );
 
-
-        return items;
-    }
+    return items;
+  }
 }
 
-export {getLoot};
+export { getLoot };
