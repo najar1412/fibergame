@@ -1,6 +1,14 @@
 import LocationModal from "./LocationModal";
 import SelectableModal from "./SelectableModal";
 
+import Shelter from "./Shelter";
+import Fireplace from "./Fireplace";
+
+const placeableModals = {
+  shelter: <Shelter />,
+  fireplace: <Fireplace />,
+};
+
 const ModalSelector = (props) => {
   let getModalType = () => {
     if (Object.hasOwn(props.selectedMesh, "locationData")) {
@@ -17,6 +25,7 @@ const ModalSelector = (props) => {
         <SelectableModal
           selectedMesh={props.selectedMesh}
           handleTask={props.handleTask}
+          subModal={placeableModals[props.selectedMesh.selectableData.name]}
         />
       );
     }
