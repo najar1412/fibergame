@@ -15,15 +15,25 @@ import Shelter from "../comps/models/Shelter";
 const deg2rad = (degrees) => degrees * (Math.PI / 180);
 
 const Village = (props) => {
-  useEffect(() => {}, []);
+  // global
+  const environmentGroup = useRef();
+  const groundPlane = useRef();
+  const sunGroup = useRef();
+  let sunPosition = [0, 150, 0];
 
-  const handleRemoveItem = (itemName) => {
-    props.setPlaceables(
-      props.placeables.filter((item) => item.name !== itemName)
-    );
+  // helpers
+  const handleRemovePlaceable = (item) => {
+    let newPlaceables = JSON.parse(JSON.stringify(props.placeables));
+    newPlaceables.every((placeable, index) => {
+      if (placeable.name === item.name) {
+        newPlaceables.splice(index, 1);
+        return false;
+      }
+    });
+    props.setPlaceables(newPlaceables);
   };
 
-  function placeObject(e) {
+  function handlePlacePlaceable(e) {
     if (props.canPlace) {
       let selectableData = getSelectableData(props.selectableToPlace);
 
@@ -33,10 +43,27 @@ const Village = (props) => {
       props.setCanPlace(false);
       //remove item from nventory
       props.character.removeFromInv([selectableData]);
-      handleRemoveItem(selectableData.name);
+      handleRemovePlaceable(selectableData);
     }
   }
 
+  function selectMesh(e) {
+    props.setSelectedMesh(e.eventObject);
+    props.openModal(true);
+  }
+
+  function getSelectableData(name) {
+    let item;
+    props.selectables.forEach((selectable) => {
+      if (selectable.name === name) {
+        item = selectable;
+      }
+    });
+
+    return item;
+  }
+
+  // environment mesh imports
   const RockLgModel = () => {
     const gltf = useGLTF(rockLg);
     let mesh = gltf.nodes.Object001;
@@ -67,22 +94,7 @@ const Village = (props) => {
     );
   };
 
-  function selectMesh(e) {
-    props.setSelectedMesh(e.eventObject);
-    props.openModal(true);
-  }
-
-  function getSelectableData(name) {
-    let item;
-    props.selectables.forEach((selectable) => {
-      if (selectable.name === name) {
-        item = selectable;
-      }
-    });
-
-    return item;
-  }
-
+  // placeable comp
   const listItems = props.placedItems.map((item, index) => {
     switch (item.name) {
       case "fireplace":
@@ -92,25 +104,15 @@ const Village = (props) => {
     }
   });
 
-  // const group = useRef();
-  const groundGroup = useRef();
-  const groundPlane = useRef();
-  const sunCtrl = useRef();
-  let sunPosition = [0, 150, 0];
-  // groundGroup.current.rotation.x= -Math.PI / 2
-
   useFrame(() => {
     // setup 3d objects
-    groundGroup.current.rotation.x = deg2rad(-90);
-    sunCtrl.current.rotation.z += 0.0001;
-
-    // init idling
-    // group.current.position.z += 0.006;
+    environmentGroup.current.rotation.x = deg2rad(-90);
+    sunGroup.current.rotation.z += 0.0001;
   });
 
   return (
     <Fragment>
-      <group ref={sunCtrl}>
+      <group ref={sunGroup}>
         <directionalLight
           castShadow
           intensity={0.3}
@@ -125,8 +127,12 @@ const Village = (props) => {
       <PerspectiveCamera makeDefault />
       <IsoControls screenSpacePanning={true} />
 
-      <group ref={groundGroup}>
-        <mesh ref={groundPlane} onClick={(e) => placeObject(e)} receiveShadow>
+      <group ref={environmentGroup}>
+        <mesh
+          ref={groundPlane}
+          onClick={(e) => handlePlacePlaceable(e)}
+          receiveShadow
+        >
           <planeGeometry args={[100, 100]} />
           <meshStandardMaterial color="rgb(225, 249, 226)" />
         </mesh>

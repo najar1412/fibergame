@@ -4,7 +4,7 @@ import { Html } from "@react-three/drei";
 
 import Lighting from "./Lighting";
 
-function placeObjectOnWorld(object, lat, lon, radius) {
+function handlePlacePlaceableOnWorld(object, lat, lon, radius) {
   var latRad = lat * (Math.PI / 180);
   var lonRad = -lon * (Math.PI / 180);
   object.position.set(
