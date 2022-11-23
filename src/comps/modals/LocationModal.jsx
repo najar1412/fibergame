@@ -28,12 +28,13 @@ const LocationModal = (props) => {
             <div className="flex flex-col">
               {props.selectedMesh.locationData.tasks.map((task) => (
                 <TimedButton
+                  startTaskTimer={props.startTaskTimer}
+                  characterTask={props.characterTask}
                   key={task.id}
                   disabled={props.characterTask}
                   label={task.name}
                   taskData={task}
-                  timer={task.timer}
-                  clickFunc={() => props.handleTask(task)}
+                  handleTask={() => props.handleTask(task)}
                   setCharacterTask={props.setCharacterTask}
                 />
               ))}

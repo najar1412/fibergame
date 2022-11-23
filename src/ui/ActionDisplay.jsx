@@ -6,12 +6,13 @@ const ActionDisplay = (props) => {
       <div className="flex flex-col">
         {props.location.tasks.map((item) => (
           <TimedButton
+            characterTask={props.characterTask}
+            startTaskTimer={props.startTaskTimer}
             key={item.id}
             disabled={props.characterTask}
             label={item.name}
             taskData={item}
-            timer={item.timer}
-            clickFunc={() => props.handleTask(item)}
+            handleTask={() => props.handleTask(item)}
             setCharacterTask={props.setCharacterTask}
           />
         ))}

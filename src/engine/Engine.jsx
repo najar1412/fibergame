@@ -1,4 +1,4 @@
-import { Fragment, useState, Suspense } from "react";
+import { Fragment, useState, Suspense, useEffect, useRef } from "react";
 
 import { Canvas } from "@react-three/fiber";
 import Modal from "react-modal";
@@ -48,7 +48,7 @@ const SURROUNDING = {
       name: "search",
       verb: "searching",
       location: "surroundings",
-      timer: 1000,
+      duration: 3000,
     },
   ],
 };
@@ -75,7 +75,7 @@ const WORLDLOCATIONS = [
       {
         id: 1,
         name: "explore",
-        timer: 100000,
+        duration: 3000,
         verb: "exploring",
         location: "Ruined Factory",
       },
@@ -95,14 +95,14 @@ const WORLDLOCATIONS = [
       {
         id: 2,
         name: "explore",
-        timer: 100000,
+        duration: 3000,
         verb: "exploring",
         location: "Choad Featherwing's camp",
       },
       {
         id: 3,
         name: "raid",
-        timer: 10000,
+        duration: 10000,
         verb: "raiding",
         location: "Choad Featherwing's camp",
       },
@@ -120,7 +120,7 @@ const WORLDLOCATIONS = [
       {
         id: 4,
         name: "explore",
-        timer: 100000,
+        duration: 3000,
         verb: "exploring",
         location: "supply crate",
       },
@@ -140,7 +140,7 @@ const WORLDLOCATIONS = [
       {
         id: 5,
         name: "explore",
-        timer: 100000,
+        duration: 3000,
         verb: "exploring",
         location: "copper mine",
       },
@@ -190,12 +190,17 @@ let tempmessages = [
 ];
 
 const Engine = (props) => {
+  const [narratorTick, setNarratorTick] = useState(0);
+  const narratorTickTimer = useRef(null); // we can save timer in useRef and pass it to child
+  const narratorTickDelay = 10000;
+  const taskTickTimer = useRef(null);
+
   const [sceneName, setSceneName] = useState("create");
   const [character, setCharacter] = useState(new ManageCharacter2());
   const [characterTask, setCharacterTask] = useState(character.task());
-  const [health, setHealth] = useState(100);
-  const [hunger, setHunger] = useState(100);
-  const [thirst, setThirst] = useState(100);
+  const [health, setHealth] = useState(70);
+  const [hunger, setHunger] = useState(70);
+  const [thirst, setThirst] = useState(70);
 
   const [placeables, setPlaceables] = useState([]);
   const [canPlace, setCanPlace] = useState(false);
@@ -206,6 +211,26 @@ const Engine = (props) => {
   const [modalIsOpen, setIsOpen] = useState(false);
 
   const [narratorMessage, setNarratorMessage] = useState([]);
+
+  useEffect(() => {
+    // useRef value stored in .current property
+    narratorTickTimer.current = setInterval(
+      () => setNarratorTick((v) => v + 1),
+      1 * narratorTickDelay
+    );
+
+    // clear on component unmount
+    return () => {
+      clearInterval(narratorTickTimer.current);
+    };
+  }, []);
+
+  const startTaskTimer = (duration, func) => {
+    taskTickTimer.current = setTimeout(() => {
+      clearInterval(taskTickTimer.current);
+      func();
+    }, 1 * duration);
+  };
 
   function sendMessageToNarrator(message) {
     const copyMessage = JSON.parse(JSON.stringify(message));
@@ -305,7 +330,15 @@ const Engine = (props) => {
               characterTask={characterTask}
             />
 
-            <StatusBarDisplay health={health} hunger={hunger} thirst={thirst} />
+            <StatusBarDisplay
+              narratorTick={narratorTick}
+              health={health}
+              hunger={hunger}
+              thirst={thirst}
+              setHealth={setHealth}
+              setHunger={setHunger}
+              setThirst={setThirst}
+            />
 
             <ActionDisplay
               handleTask={handleTask}
@@ -315,6 +348,7 @@ const Engine = (props) => {
               character={character}
               characterTask={characterTask}
               setCharacterTask={setCharacterTask}
+              startTaskTimer={startTaskTimer}
             />
             <PlacementDisplay
               character={character}
@@ -340,16 +374,14 @@ const Engine = (props) => {
               characterTask={characterTask}
             />
 
-            <StatusBarDisplay health={health} hunger={hunger} thirst={thirst} />
-
-            <ActionDisplay
-              handleTask={handleTask}
-              setPlaceables={setPlaceables}
-              sendMessageToNarrator={sendMessageToNarrator}
-              location={SURROUNDING}
-              character={character}
-              characterTask={characterTask}
-              setCharacterTask={setCharacterTask}
+            <StatusBarDisplay
+              narratorTick={narratorTick}
+              health={health}
+              hunger={hunger}
+              thirst={thirst}
+              setHealth={setHealth}
+              setHunger={setHunger}
+              setThirst={setThirst}
             />
           </div>
         );
@@ -412,6 +444,7 @@ const Engine = (props) => {
         </div>
 
         <ModalSelector
+          startTaskTimer={startTaskTimer}
           selectedMesh={selectedMesh}
           handleTask={handleTask}
           characterTask={characterTask}
