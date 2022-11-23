@@ -16,7 +16,7 @@ const LocationDisplay = (props) => {
   };
 
   return (
-    <div className="main-menu flex pointer-events-auto w-fit mb-8">
+    <div className="main-menu flex pointer-events-auto w-fit mb-4">
       <div
         onClick={handleClick}
         data-scene-name="village"

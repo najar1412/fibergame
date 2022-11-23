@@ -14,6 +14,7 @@ const ModalSelector = (props) => {
     if (Object.hasOwn(props.selectedMesh, "locationData")) {
       return (
         <LocationModal
+          startTaskTimer={props.startTaskTimer}
           selectedMesh={props.selectedMesh}
           handleTask={props.handleTask}
           characterTask={props.characterTask}
