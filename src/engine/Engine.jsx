@@ -322,7 +322,11 @@ const Engine = (props) => {
         return (
           <div className="absolute top-0 z-10 flex flex-col h-screen w-screen pointer-events-none">
             <div className="h-full w-full p-8">
-              <Narrator narratorMessage={narratorMessage} />
+              <Narrator
+                narratorMessage={narratorMessage}
+                narratorTick={narratorTick}
+                messages={tempmessages}
+              />
 
               <Toast narratorMessage={narratorMessage} />
 
@@ -369,8 +373,6 @@ const Engine = (props) => {
       case "world":
         return (
           <div className="absolute top-0 z-10 flex flex-col h-screen w-screen pointer-events-none p-8">
-            <Narrator narratorMessage={narratorMessage} />
-
             <LocationDisplay ChangeScene={ChangeScene} />
             <ButtonDisplay
               character={character}
