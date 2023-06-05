@@ -214,7 +214,7 @@ const Engine = (props) => {
 
   const [narratorMessage, setNarratorMessage] = useState([]);
 
-  /* useEffect(() => {
+  useEffect(() => {
     // useRef value stored in .current property
     narratorTickTimer.current = setInterval(
       () => setNarratorTick((v) => v + 1),
@@ -225,7 +225,7 @@ const Engine = (props) => {
     return () => {
       clearInterval(narratorTickTimer.current);
     };
-  }, []); */
+  }, []);
 
   const startTaskTimer = (duration, func) => {
     taskTickTimer.current = setTimeout(() => {
