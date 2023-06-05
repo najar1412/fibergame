@@ -1,18 +1,18 @@
 import { Fragment, useEffect, useRef } from "react";
 
 import { useFrame } from "@react-three/fiber";
-import { Sampler, PerspectiveCamera, useGLTF } from "@react-three/drei";
+import { PerspectiveCamera } from "@react-three/drei";
 import IsoControls from "../engine/controls/IsoControls";
 
-import rockLg from "../models/rock_lg.glb";
-import rockMd from "../models/rock_md.glb";
-import rockSm from "../models/rock_sm.glb";
+import { RockLgModel, RockMdModel, RockSmModel } from "../comps/modals/Rocks";
 
 import Character from "../comps/models/Character";
 import Fireplace from "../comps/models/Fireplace";
 import Shelter from "../comps/models/Shelter";
+import ScatterInstance from "../engine/ScatterInstance";
 
 const deg2rad = (degrees) => degrees * (Math.PI / 180);
+const WORLDSIZE = [20, 20];
 
 const Village = (props) => {
   // global
@@ -63,37 +63,6 @@ const Village = (props) => {
     return item;
   }
 
-  // environment mesh imports
-  const RockLgModel = () => {
-    const gltf = useGLTF(rockLg);
-    let mesh = gltf.nodes.Object001;
-    return (
-      <>
-        <primitive object={mesh.geometry} receiveShadow castShadow />
-      </>
-    );
-  };
-
-  const RockMdModel = () => {
-    const gltf = useGLTF(rockMd);
-    let mesh = gltf.nodes.Object002;
-    return (
-      <>
-        <primitive object={mesh.geometry} receiveShadow castShadow />
-      </>
-    );
-  };
-
-  const RockSmModel = () => {
-    const gltf = useGLTF(rockSm);
-    let mesh = gltf.nodes.RockSm;
-    return (
-      <>
-        <primitive object={mesh.geometry} receiveShadow castShadow />
-      </>
-    );
-  };
-
   // placeable comp
   const listItems = props.placedItems.map((item, index) => {
     switch (item.name) {
@@ -114,7 +83,7 @@ const Village = (props) => {
     <Fragment>
       <group ref={sunGroup}>
         <directionalLight
-          castShadow
+          /* castShadow */
           intensity={0.3}
           position={sunPosition}
           shadow-mapSize-height={256}
@@ -133,39 +102,15 @@ const Village = (props) => {
           onClick={(e) => handlePlacePlaceable(e)}
           receiveShadow
         >
-          <planeGeometry args={[100, 100]} />
+          <planeGeometry args={[WORLDSIZE[0] * 2, WORLDSIZE[1] * 2]} />
           <meshStandardMaterial color="rgb(225, 249, 226)" />
         </mesh>
 
-        <Sampler
-          count={10} // Number of samples
-          mesh={groundPlane}
-        >
-          <instancedMesh args={[null, null, 1_000]} castShadow>
-            <RockLgModel />
-            <meshStandardMaterial />
-          </instancedMesh>
-        </Sampler>
+        <ScatterInstance bounds={WORLDSIZE} mesh={RockLgModel} amount={20} />
 
-        <Sampler
-          count={100} // Number of samples
-          mesh={groundPlane}
-        >
-          <instancedMesh args={[null, null, 1_000]} castShadow>
-            <RockMdModel />
-            <meshStandardMaterial />
-          </instancedMesh>
-        </Sampler>
+        <ScatterInstance bounds={WORLDSIZE} mesh={RockMdModel} amount={30} />
 
-        <Sampler
-          count={300} // Number of samples
-          mesh={groundPlane}
-        >
-          <instancedMesh args={[null, null, 1_000]} castShadow>
-            <RockSmModel />
-            <meshStandardMaterial />
-          </instancedMesh>
-        </Sampler>
+        <ScatterInstance bounds={WORLDSIZE} mesh={RockSmModel} amount={50} />
       </group>
 
       {/* <group ref={group} position={[-5, 0, 0]}>
