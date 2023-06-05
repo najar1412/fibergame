@@ -4,6 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import Modal from "react-modal";
 
 import Narrator from "./Narrator";
+import Toast from "./Toast";
 import LocationDisplay from "../ui/LocationDisplay";
 import ActionDisplay from "../ui/ActionDisplay";
 import CharacterDisplay from "../ui/CharacterDisplay";
@@ -319,45 +320,49 @@ const Engine = (props) => {
                 break; */
       case "village":
         return (
-          <div className="absolute top-0 z-10 flex flex-col h-screen w-screen pointer-events-none p-8">
-            <Narrator narratorMessage={narratorMessage} />
+          <div className="absolute top-0 z-10 flex flex-col h-screen w-screen pointer-events-none">
+            <div className="h-full w-full p-8">
+              <Narrator narratorMessage={narratorMessage} />
 
-            <LocationDisplay ChangeScene={ChangeScene} />
-            <ButtonDisplay
-              character={character}
-              setPlaceables={setPlaceables}
-            />
-            <CharacterDisplay
-              character={character}
-              characterTask={characterTask}
-            />
+              <Toast narratorMessage={narratorMessage} />
 
-            <StatusBarDisplay
-              narratorTick={narratorTick}
-              health={health}
-              hunger={hunger}
-              thirst={thirst}
-              setHealth={setHealth}
-              setHunger={setHunger}
-              setThirst={setThirst}
-            />
+              <LocationDisplay ChangeScene={ChangeScene} />
+              <ButtonDisplay
+                character={character}
+                setPlaceables={setPlaceables}
+              />
+              <CharacterDisplay
+                character={character}
+                characterTask={characterTask}
+              />
 
-            <ActionDisplay
-              handleTask={handleTask}
-              setPlaceables={setPlaceables}
-              sendMessageToNarrator={sendMessageToNarrator}
-              location={SURROUNDING}
-              character={character}
-              characterTask={characterTask}
-              setCharacterTask={setCharacterTask}
-              startTaskTimer={startTaskTimer}
-            />
-            <PlacementDisplay
-              character={character}
-              placeables={placeables}
-              setCanPlace={setCanPlace}
-              setSelectableToPlace={setSelectableToPlace}
-            />
+              <StatusBarDisplay
+                narratorTick={narratorTick}
+                health={health}
+                hunger={hunger}
+                thirst={thirst}
+                setHealth={setHealth}
+                setHunger={setHunger}
+                setThirst={setThirst}
+              />
+
+              <ActionDisplay
+                handleTask={handleTask}
+                setPlaceables={setPlaceables}
+                sendMessageToNarrator={sendMessageToNarrator}
+                location={SURROUNDING}
+                character={character}
+                characterTask={characterTask}
+                setCharacterTask={setCharacterTask}
+                startTaskTimer={startTaskTimer}
+              />
+              <PlacementDisplay
+                character={character}
+                placeables={placeables}
+                setCanPlace={setCanPlace}
+                setSelectableToPlace={setSelectableToPlace}
+              />
+            </div>
           </div>
         );
 
