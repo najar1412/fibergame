@@ -1,4 +1,7 @@
 import { Fragment, useEffect, useRef } from "react";
+import noise from "../engine/helpers/perlin";
+
+import * as THREE from "three";
 
 import { useFrame } from "@react-three/fiber";
 import { PerspectiveCamera } from "@react-three/drei";
@@ -12,7 +15,7 @@ import Shelter from "../comps/models/Shelter";
 import ScatterInstance from "../engine/ScatterInstance";
 
 const deg2rad = (degrees) => degrees * (Math.PI / 180);
-const WORLDSIZE = [20, 20];
+const WORLDSIZE = [100, 100];
 
 const Village = (props) => {
   // global
@@ -102,23 +105,36 @@ const Village = (props) => {
           onClick={(e) => handlePlacePlaceable(e)}
           receiveShadow
         >
-          <planeGeometry args={[WORLDSIZE[0] * 2, WORLDSIZE[1] * 2]} />
+          <planeGeometry
+            args={[WORLDSIZE[0] * 2, WORLDSIZE[1] * 2, 100, 100]}
+          />
           <meshStandardMaterial color="rgb(225, 249, 226)" />
         </mesh>
 
-        <ScatterInstance bounds={WORLDSIZE} mesh={RockLgModel} amount={20} />
+        <ScatterInstance
+          bounds={WORLDSIZE}
+          SEED={props.SEED}
+          mesh={RockLgModel}
+          groundPlane={groundPlane}
+          threshold={[0.95, 1.0]}
+        />
 
-        <ScatterInstance bounds={WORLDSIZE} mesh={RockMdModel} amount={30} />
+        <ScatterInstance
+          bounds={WORLDSIZE}
+          SEED={props.SEED}
+          mesh={RockMdModel}
+          groundPlane={groundPlane}
+          threshold={[0.8, 0.9]}
+        />
 
-        <ScatterInstance bounds={WORLDSIZE} mesh={RockSmModel} amount={50} />
+        {/* <ScatterInstance
+          bounds={WORLDSIZE}
+          SEED={props.SEED}
+          mesh={RockSmModel}
+          groundPlane={groundPlane}
+          threshold={0.2}
+        /> */}
       </group>
-
-      {/* <group ref={group} position={[-5, 0, 0]}>
-      <mesh position={[0, .5, 0]}>
-        <boxGeometry />
-        <meshStandardMaterial/>
-      </mesh>
-    </group> */}
 
       <Character />
 
