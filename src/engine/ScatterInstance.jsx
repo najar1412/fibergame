@@ -1,27 +1,64 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 
-import { generateRandomInteger, generateRandomFloat } from "./helpers/helpers";
+import * as THREE from "three";
+import noise from "../engine/helpers/perlin";
 
 const ScatterInstance = (props) => {
+  const [loaded, setLoaded] = useState(false);
   const mesh = props.mesh();
+
+  const placeGeometry = () => {
+    let locations = [];
+
+    let newNoise = noise.noise;
+
+    newNoise.seed(props.SEED);
+
+    const positionAttribute = props.groundPlane.current
+      .clone()
+      .geometry.getAttribute("position");
+    const vertex = new THREE.Vector3();
+
+    for (let i = 0; i < positionAttribute.count; i++) {
+      vertex.fromBufferAttribute(positionAttribute, i);
+
+      vertex.z += newNoise.simplex2(vertex.x, vertex.y);
+      if (vertex.z > props.threshold[0] && vertex.z < props.threshold[1]) {
+        locations.push({ x: vertex.x, y: vertex.y, z: vertex.z });
+      }
+    }
+
+    return locations;
+  };
+
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
 
   return (
     <Fragment>
-      {[...Array(props.amount)].map((_, i) => {
-        return (
-          <mesh
-            key={`lgRock_${i}`}
-            scale={generateRandomFloat(0.5, 1.2)}
-            position={[
-              generateRandomInteger(-props.bounds[0], props.bounds[1]),
-              generateRandomInteger(-props.bounds[0], props.bounds[1]),
-              0,
-            ]}
-            geometry={mesh.geometry}
-            material={mesh.material}
-          ></mesh>
-        );
-      })}
+      {loaded &&
+        props.groundPlane.current &&
+        placeGeometry().map((location, i) => {
+          return (
+            <mesh
+              key={`lgRock_${i}`}
+              scale={location.z}
+              position={[
+                location.x,
+                location.y * location.z,
+                (location.z / location.y) * 10,
+              ]}
+              rotation={[
+                (location.y / location.x) * 2,
+                (location.x / location.z) * 5,
+                (location.z / location.y) * 10,
+              ]}
+              geometry={mesh.geometry}
+              material={mesh.material}
+            ></mesh>
+          );
+        })}
     </Fragment>
   );
 };

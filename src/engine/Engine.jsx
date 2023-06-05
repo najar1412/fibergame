@@ -190,6 +190,7 @@ let tempmessages = [
 ];
 
 const Engine = (props) => {
+  const SEED = 20;
   const [narratorTick, setNarratorTick] = useState(0);
   const narratorTickTimer = useRef(null); // we can save timer in useRef and pass it to child
   const narratorTickDelay = 10000;
@@ -278,6 +279,7 @@ const Engine = (props) => {
             selectedMesh={selectedMesh}
             setSelectedMesh={setSelectedMesh}
             selectableToPlace={selectableToPlace}
+            SEED={SEED}
           />
         );
       case "world":
