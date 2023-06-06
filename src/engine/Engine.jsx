@@ -258,7 +258,7 @@ const Engine = (props) => {
     setSceneName(sceneName);
   }
 
-  function SceneSelector(sceneName) {
+  function sceneSelector(sceneName) {
     switch (sceneName) {
       case "create":
         return <Create data={HOUSE} character={character.character} />;
@@ -299,7 +299,7 @@ const Engine = (props) => {
     }
   }
 
-  function HandleUi(sceneName) {
+  function handleUi(sceneName) {
     switch (sceneName) {
       case "create":
         return (
@@ -432,11 +432,11 @@ const Engine = (props) => {
 
   return (
     <Fragment>
-      {HandleUi(sceneName)}
+      {handleUi(sceneName)}
 
       <div id="canvas-container" className="fixed top-0 h-full w-full">
         <Canvas shadows>
-          <Suspense fallback={<Loading />}>{SceneSelector(sceneName)}</Suspense>
+          <Suspense fallback={<Loading />}>{sceneSelector(sceneName)}</Suspense>
         </Canvas>
       </div>
 
