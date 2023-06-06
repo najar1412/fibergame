@@ -252,7 +252,7 @@ const Engine = (props) => {
     setIsOpen(false);
   }
 
-  function ChangeScene(sceneName) {
+  function changeScene(sceneName) {
     // handle ui
     // handle 3d
     setSceneName(sceneName);
@@ -305,14 +305,14 @@ const Engine = (props) => {
         return (
           <div className="absolute top-0 z-10 flex flex-col h-screen w-screen pointer-events-none  p-8">
             <div className="pointer-events-auto">
-              <div onClick={() => ChangeScene("village")}>enter</div>
+              <div onClick={() => changeScene("village")}>enter</div>
             </div>
           </div>
         );
       /* case 'house':
                 return (
                     <div className='absolute top-0 z-10 flex flex-col h-screen w-screen pointer-events-none  p-8'>
-                        <LocationDisplay ChangeScene={ChangeScene}/>
+                        <LocationDisplay ChangeScene={changeScene}/>
                         <CharacterDisplay character={character} setPlaceables={setPlaceables} characterTask={characterTask}/>
                         <ActionDisplay location={HOUSE} character={character}/>
                     </div>
@@ -330,7 +330,7 @@ const Engine = (props) => {
 
               <Toast narratorMessage={narratorMessage} />
 
-              <LocationDisplay ChangeScene={ChangeScene} />
+              <LocationDisplay ChangeScene={changeScene} />
               <ButtonDisplay
                 character={character}
                 setPlaceables={setPlaceables}
@@ -375,7 +375,7 @@ const Engine = (props) => {
           <div className="absolute top-0 z-10 flex flex-col h-screen w-screen pointer-events-none p-8">
             <Toast narratorMessage={narratorMessage} />
 
-            <LocationDisplay ChangeScene={ChangeScene} />
+            <LocationDisplay ChangeScene={changeScene} />
             <ButtonDisplay
               character={character}
               setPlaceables={setPlaceables}
