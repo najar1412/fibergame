@@ -6,7 +6,9 @@ import noise from "./perlin";
 const ScatterInstance = (props) => {
   const [loaded, setLoaded] = useState(false);
   const mesh = props.mesh();
-  console.log(mesh);
+
+  console.log("**********");
+
 
   const placeGeometry = () => {
     let locations = [];
@@ -24,7 +26,7 @@ const ScatterInstance = (props) => {
       vertex.fromBufferAttribute(positionAttribute, i);
 
       vertex.z += newNoise.simplex2(vertex.x, vertex.y);
-      if (vertex.z > props.threshold[0] && vertex.z < props.threshold[1]) {
+      if (vertex.z >= props.threshold[0] && vertex.z <= props.threshold[1]) {
         locations.push({ x: vertex.x, y: vertex.y, z: vertex.z });
       }
     }
@@ -42,8 +44,10 @@ const ScatterInstance = (props) => {
         props.groundPlane.current &&
         placeGeometry().map((location, i) => {
           return (
-            <mesh
-              key={`${mesh.name}_${i}`}
+
+            <group
+              key={`${mesh.userData.name}_${i}`}
+
               scale={props.flip ? -location.z : location.z}
               position={[location.x, location.y * location.z, 0]}
               rotation={[
@@ -51,9 +55,19 @@ const ScatterInstance = (props) => {
                 props.noRotation ? 0 : (location.x / location.z) * 5,
                 (location.z / location.y) * 10,
               ]}
-              geometry={mesh.geometry}
-              material={mesh.material}
-            ></mesh>
+            >
+              {Object.keys(mesh.nodes).map((key) => {
+                if (mesh.nodes[key].isObject3D) {
+                  return (
+                    <mesh
+                      key={mesh.nodes[key].uuid}
+                      geometry={mesh.nodes[key].geometry}
+                      material={mesh.nodes[key].material}
+                    ></mesh>
+                  );
+                }
+              })}
+            </group>
           );
         })}
     </Fragment>
