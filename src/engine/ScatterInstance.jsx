@@ -44,11 +44,7 @@ const ScatterInstance = (props) => {
             <mesh
               key={`lgRock_${i}`}
               scale={location.z}
-              position={[
-                location.x,
-                location.y * location.z,
-                (location.z / location.y) * 10,
-              ]}
+              position={[location.x, location.y * location.z, 0]}
               rotation={[
                 (location.y / location.x) * 2,
                 (location.x / location.z) * 5,
