@@ -5,6 +5,7 @@ import { PerspectiveCamera } from "@react-three/drei";
 import IsoControls from "../controls/IsoControls";
 
 import { RockLgModel, RockMdModel, RockSmModel } from "../models/Rocks";
+import { Tree01Model, Tree02Model } from "../models/Trees";
 
 import Character from "../models/Character";
 import Fireplace from "../models/Fireplace";
@@ -121,7 +122,17 @@ const Village = (props) => {
           SEED={props.SEED}
           mesh={RockMdModel}
           groundPlane={groundPlane}
-          threshold={[0.8, 0.9]}
+          threshold={[0.85, 0.95]}
+        />
+
+        <ScatterInstance
+          bounds={WORLDSIZE}
+          SEED={props.SEED}
+          mesh={Tree01Model}
+          groundPlane={groundPlane}
+          threshold={[0.6, 0.8]}
+          noRotation
+          flip
         />
 
         {/* <ScatterInstance
