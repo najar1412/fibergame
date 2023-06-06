@@ -6,20 +6,21 @@ import rockSm from "../../engine/geometry/rock_sm.glb";
 
 const RockLgModel = () => {
   const gltf = useGLTF(rockLg);
-  let mesh = gltf.nodes.Object001;
-  return mesh;
+  console.log(gltf);
+  gltf.userData["name"] = "rockLg";
+  return gltf;
 };
 
 const RockMdModel = () => {
   const gltf = useGLTF(rockMd);
-  let mesh = gltf.nodes.Object002;
-  return mesh;
+  gltf.userData["name"] = "rockMd";
+  return gltf;
 };
 
 const RockSmModel = () => {
   const gltf = useGLTF(rockSm);
-  let mesh = gltf.nodes.RockSm;
-  return mesh;
+  gltf.userData["name"] = "rockSm";
+  return gltf;
 };
 
 export { RockLgModel, RockMdModel, RockSmModel };
