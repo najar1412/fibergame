@@ -4,23 +4,20 @@ import { useFrame } from "@react-three/fiber";
 import { PerspectiveCamera } from "@react-three/drei";
 import IsoControls from "../controls/IsoControls";
 
-import { RockLgModel, RockMdModel, RockSmModel } from "../models/Rocks";
-import { Tree01Model, Tree02Model } from "../models/Trees";
-
+import { RockLgModel, RockMdModel } from "../models/Rocks";
+import { Tree01Model } from "../models/Trees";
+import EnvironmentLighting from "./EnvironmentLighting";
 import Character from "../models/Character";
 import Fireplace from "../models/Fireplace";
 import Shelter from "../models/Shelter";
 import ScatterInstance from "../helpers/ScatterInstance";
-
-const deg2rad = (degrees) => degrees * (Math.PI / 180);
-const WORLDSIZE = [100, 100];
+import { deg2rad } from "../helpers/helpers";
 
 const Village = (props) => {
   // global
+  const WORLDSIZE = [100, 100];
   const environmentGroup = useRef();
   const groundPlane = useRef();
-  const sunGroup = useRef();
-  let sunPosition = [0, 150, 0];
 
   // helpers
   const handleRemovePlaceable = (item) => {
@@ -77,22 +74,11 @@ const Village = (props) => {
   useFrame(() => {
     // setup 3d objects
     environmentGroup.current.rotation.x = deg2rad(-90);
-    sunGroup.current.rotation.z += 0.0001;
   });
 
   return (
     <Fragment>
-      <group ref={sunGroup}>
-        <directionalLight
-          /* castShadow */
-          intensity={0.3}
-          position={sunPosition}
-          shadow-mapSize-height={256}
-          shadow-mapSize-width={256}
-        />
-      </group>
-
-      <ambientLight intensity={0.02} />
+      <EnvironmentLighting />
 
       <PerspectiveCamera makeDefault />
       <IsoControls screenSpacePanning={true} />
@@ -106,7 +92,7 @@ const Village = (props) => {
           <planeGeometry
             args={[WORLDSIZE[0] * 2, WORLDSIZE[1] * 2, 100, 100]}
           />
-          <meshStandardMaterial color="rgb(225, 249, 226)" />
+          <meshPhysicalMaterial color="rgb(225, 249, 226)" />
         </mesh>
 
         <ScatterInstance

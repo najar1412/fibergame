@@ -21,7 +21,7 @@ const WORLD = {
 
 const WORLDLOCATIONS = [
   {
-    name: `players's camp`,
+    name: `kotch's village`,
     type: "camp",
     tasks: [],
     secrets: [],
@@ -51,7 +51,7 @@ const WORLDLOCATIONS = [
       "This large town is located in the mountains and looks very old-fashioned.  It is best-known for the produce it exports and its fishing spots.  Also, there is an old ceremonial site nearby.",
   },
   {
-    name: "Choad Featherwing's camp using a longer name to test string lengths",
+    name: "Choad Featherwing's village",
     type: "player camp",
     tasks: [
       {

@@ -15,4 +15,6 @@ const makeId = (length) => {
   return result;
 };
 
-export { generateRandomInteger, generateRandomFloat, makeId };
+const deg2rad = (degrees) => degrees * (Math.PI / 180);
+
+export { generateRandomInteger, generateRandomFloat, makeId, deg2rad };

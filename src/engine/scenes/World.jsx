@@ -1,8 +1,19 @@
-import { Fragment, useState, useEffect, useRef } from "react";
-import { OrbitControls } from "@react-three/drei";
-import { Html } from "@react-three/drei";
+import { Fragment, useState, useRef } from "react";
+import * as THREE from "three";
 
-import Lighting from "./Lighting";
+import { useFrame } from "@react-three/fiber";
+import {
+  Environment,
+  OrbitControls,
+  useEnvironment,
+  Html,
+} from "@react-three/drei";
+
+import hdriImage from "../hdri/hdr_half.hdr";
+import planetTexture from "../../images/planet/01/2k_mars.jpg";
+
+/* import Lighting from "./Lighting"; */
+import EnvironmentLighting from "./EnvironmentLighting";
 
 function handlePlacePlaceableOnWorld(object, lat, lon, radius) {
   var latRad = lat * (Math.PI / 180);
@@ -28,8 +39,12 @@ function latLongTo3d(lat, lon, radius) {
 
 const World = (props) => {
   const [worldSize, setWorldSize] = useState(2);
+  const group = useRef();
+  const texture = new THREE.TextureLoader().load(planetTexture);
 
-  useEffect(() => {}, []);
+  useFrame(() => {
+    group.current.rotation.z += 0.001;
+  });
 
   function selectMesh(e) {
     props.openModal(true);
@@ -44,27 +59,34 @@ const World = (props) => {
       position={latLongTo3d(item.latlong[0], item.latlong[1], worldSize)}
     >
       <boxGeometry args={[0.2, 0.2, 0.2]} />
-      <meshStandardMaterial color={item.color} />
+      <meshPhysicalMaterial color={item.color} envMapIntensity={30} />
       <Html>
-        <div className="capitalize w-[150px] pointer-events-none select-none">
+        <div className="text-xs bg-white rounded capitalize w-fit pointer-events-none select-none py-2 px-4 whitespace-nowrap">
           {item.name}
         </div>
       </Html>
     </mesh>
   ));
 
-  const group = useRef();
+  //useEnvironment({ preset: "city" });
 
   return (
     <Fragment>
-      <Lighting />
+      {/* <Lighting /> */}
+      {/* <EnvironmentLighting /> */}
+
+      <Environment background files={hdriImage} />
 
       <OrbitControls />
 
       <group ref={group}>
         <mesh>
           <sphereGeometry args={[worldSize]} />
-          <meshStandardMaterial color={"rgb(225, 249, 226)"} />
+          <meshPhysicalMaterial
+            /* color={"rgb(225, 249, 226)"} */
+            map={texture}
+            envMapIntensity={30}
+          />
         </mesh>
 
         {listItems}
