@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-import healthIcon from "../images/favorite_FILL0_wght400_GRAD0_opsz48.svg";
-import hungerIcon from "../images/restaurant_FILL0_wght400_GRAD0_opsz48.svg";
-import thirstIcon from "../images/water_drop_FILL0_wght400_GRAD0_opsz48.svg";
+import healthIcon from "../../../images/favorite_FILL0_wght400_GRAD0_opsz48.svg";
+import hungerIcon from "../../../images/restaurant_FILL0_wght400_GRAD0_opsz48.svg";
+import thirstIcon from "../../../images/water_drop_FILL0_wght400_GRAD0_opsz48.svg";
 
 const StatusBarDisplay = (props) => {
   useEffect(() => {

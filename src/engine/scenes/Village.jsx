@@ -1,18 +1,15 @@
-import { Fragment, useEffect, useRef } from "react";
-import noise from "../engine/helpers/perlin";
-
-import * as THREE from "three";
+import { Fragment, useRef } from "react";
 
 import { useFrame } from "@react-three/fiber";
 import { PerspectiveCamera } from "@react-three/drei";
-import IsoControls from "../engine/controls/IsoControls";
+import IsoControls from "../controls/IsoControls";
 
-import { RockLgModel, RockMdModel, RockSmModel } from "../comps/modals/Rocks";
+import { RockLgModel, RockMdModel, RockSmModel } from "../models/Rocks";
 
-import Character from "../comps/models/Character";
-import Fireplace from "../comps/models/Fireplace";
-import Shelter from "../comps/models/Shelter";
-import ScatterInstance from "../engine/ScatterInstance";
+import Character from "../models/Character";
+import Fireplace from "../models/Fireplace";
+import Shelter from "../models/Shelter";
+import ScatterInstance from "../helpers/ScatterInstance";
 
 const deg2rad = (degrees) => degrees * (Math.PI / 180);
 const WORLDSIZE = [100, 100];

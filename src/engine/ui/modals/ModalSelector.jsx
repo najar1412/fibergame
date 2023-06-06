@@ -1,8 +1,8 @@
 import LocationModal from "./LocationModal";
 import SelectableModal from "./SelectableModal";
 
-import Shelter from "./Shelter";
-import Fireplace from "./Fireplace";
+import Shelter from "../../models/ShelterModal";
+import Fireplace from "../../models/FireplaceModal";
 
 const placeableModals = {
   shelter: <Shelter />,

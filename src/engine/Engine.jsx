@@ -5,18 +5,18 @@ import Modal from "react-modal";
 
 import Narrator from "./Narrator";
 import Toast from "./Toast";
-import LocationDisplay from "../ui/LocationDisplay";
-import ActionDisplay from "../ui/ActionDisplay";
-import CharacterDisplay from "../ui/CharacterDisplay";
-import PlacementDisplay from "../ui/PlacementDisplay";
-import ModalSelector from "../comps/modals/ModalSelector";
-import StatusBarDisplay from "../ui/StatusBarDisplay";
-import ButtonDisplay from "../ui/ButtonDisplay";
+import ModalSelector from "./ui/modals/ModalSelector";
+import LocationDisplay from "./ui/displays/LocationDisplay";
+import ActionDisplay from "./ui/displays/ActionDisplay";
+import CharacterDisplay from "./ui/displays/CharacterDisplay";
+import PlacementDisplay from "./ui/displays/PlacementDisplay";
+import StatusBarDisplay from "./ui/displays/StatusBarDisplay";
+import ButtonDisplay from "./ui/displays/ButtonDisplay";
 
-import House from "../scenes/House";
-import Village from "../scenes/Village";
-import World from "../scenes/World";
-import Create from "../scenes/Create";
+import House from "./scenes/House";
+import Village from "./scenes/Village";
+import World from "./scenes/World";
+import Create from "./scenes/Create";
 
 import { getTask } from "../api/tasks";
 import { ManageCharacter2 } from "../api/character";

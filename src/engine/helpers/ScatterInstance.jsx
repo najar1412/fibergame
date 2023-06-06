@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 
 import * as THREE from "three";
-import noise from "../engine/helpers/perlin";
+import noise from "./perlin";
 
 const ScatterInstance = (props) => {
   const [loaded, setLoaded] = useState(false);

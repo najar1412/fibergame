@@ -1,4 +1,4 @@
-import TimedButton from "../comps/TimedButton";
+import TimedButton from "../components/TimedButton";
 
 const ActionDisplay = (props) => {
   return (

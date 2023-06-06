@@ -1,9 +1,9 @@
 import { Fragment, useState } from "react";
 import Modal from "react-modal";
 
-import InventoryModal from "./InventoryModal";
-import CraftModal from "./CraftModal";
-import BuildModal from "./BuildModal";
+import InventoryModal from "../modals/InventoryModal";
+import CraftModal from "../modals/CraftModal";
+import BuildModal from "../modals/BuildModal";
 
 const ButtonDisplay = (props) => {
   const [modalName, setModalName] = useState("inventory");
