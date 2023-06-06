@@ -57,7 +57,7 @@
   padding: 12px;
 }
 .button {
-  @apply border flex items-center border-black justify-center w-[50px] h-[50px] bg-black text-white uppercase text-sm cursor-pointer hover:bg-white hover:text-black hover:border-black hover:animate-pulse transition duration-150 ease-linear;
+  @apply border flex items-center rounded border-black justify-center w-[50px] h-[50px] bg-black text-white uppercase text-sm cursor-pointer hover:bg-white hover:text-black hover:border-black hover:animate-pulse transition duration-150 ease-linear;
 }
 .button-secondary {
   @apply bg-white text-black;
