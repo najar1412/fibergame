@@ -6,6 +6,7 @@ import noise from "./perlin";
 const ScatterInstance = (props) => {
   const [loaded, setLoaded] = useState(false);
   const mesh = props.mesh();
+  console.log(mesh);
 
   const placeGeometry = () => {
     let locations = [];
@@ -42,12 +43,12 @@ const ScatterInstance = (props) => {
         placeGeometry().map((location, i) => {
           return (
             <mesh
-              key={`lgRock_${i}`}
-              scale={location.z}
+              key={`${mesh.name}_${i}`}
+              scale={props.flip ? -location.z : location.z}
               position={[location.x, location.y * location.z, 0]}
               rotation={[
-                (location.y / location.x) * 2,
-                (location.x / location.z) * 5,
+                props.noRotation ? 0 : (location.y / location.x) * 2,
+                props.noRotation ? 0 : (location.x / location.z) * 5,
                 (location.z / location.y) * 10,
               ]}
               geometry={mesh.geometry}
