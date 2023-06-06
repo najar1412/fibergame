@@ -22,12 +22,13 @@ const Toast = (props) => {
   };
 
   useEffect(() => {
+    console.log("pop toast");
     setCurrentToast(props.narratorMessage[0]);
     startTimer();
   }, [props.narratorMessage]);
 
   return currentToast ? (
-    <div className="absolute flex flex-col h-full pb-8 w-full overflow-hidden select-none items-center">
+    <div className="toast-display absolute flex flex-col h-full pb-8 w-full overflow-hidden select-none items-center pointer-events-none z-50">
       <div
         key={currentToast.id}
         className={`transition flex mb-8 max-w-[300px] mt-auto bg-black px-4 py-2 rounded items-center duration-500 opacity-0 ${
