@@ -123,7 +123,6 @@ const Village = (props) => {
           mesh={RockMdModel}
           groundPlane={groundPlane}
           threshold={[0.85, 0.95]}
-
         />
 
         <ScatterInstance
@@ -132,17 +131,6 @@ const Village = (props) => {
           mesh={Tree01Model}
           groundPlane={groundPlane}
           threshold={[0.6, 0.8]}
-          noRotation
-          flip
-
-        />
-
-        <ScatterInstance
-          bounds={WORLDSIZE}
-          SEED={props.SEED}
-          mesh={Tree02Model}
-          groundPlane={groundPlane}
-          threshold={[0.5, 0.55]}
           noRotation
           flip
         />
