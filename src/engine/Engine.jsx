@@ -57,14 +57,9 @@ const SELECTABLES = [
 ];
 
 let tempmessages = [
-  {
-    message:
-      "tester tester tester tester tester tester tester tester tester tester tester tester tester tester tester",
-    type: "general",
-  },
-  { message: "tester tester tester2", type: "general", id: 1 },
-  { message: "tester tester tester3", type: "general", id: 2 },
-  { message: "tester tester tester4", type: "general", id: 3 },
+  { message: "The fire is flickering.", type: "general", id: 1 },
+  { message: "A mysterious wanderer arrives.", type: "general", id: 2 },
+  { message: "Theres a ruckus in the bushes.", type: "general", id: 3 },
 ];
 
 let getNarratorMessage = () => {
