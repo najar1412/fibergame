@@ -5,13 +5,8 @@ import Modal from "react-modal";
 
 import Narrator from "./Narrator";
 import Toast from "./Toast";
+import Ui from "./ui/Ui";
 import ModalSelector from "./ui/modals/ModalSelector";
-import LocationDisplay from "./ui/displays/LocationDisplay";
-import ActionDisplay from "./ui/displays/ActionDisplay";
-import CharacterDisplay from "./ui/displays/CharacterDisplay";
-import PlacementDisplay from "./ui/displays/PlacementDisplay";
-import StatusBarDisplay from "./ui/displays/StatusBarDisplay";
-import ButtonDisplay from "./ui/displays/ButtonDisplay";
 
 import House from "./scenes/House";
 import Village from "./scenes/Village";
@@ -299,108 +294,6 @@ const Engine = (props) => {
     }
   }
 
-  function handleUi(sceneName) {
-    switch (sceneName) {
-      case "create":
-        return (
-          <div className="absolute top-0 z-10 flex flex-col h-screen w-screen pointer-events-none  p-8">
-            <div className="pointer-events-auto">
-              <div onClick={() => changeScene("village")}>enter</div>
-            </div>
-          </div>
-        );
-      /* case 'house':
-                return (
-                    <div className='absolute top-0 z-10 flex flex-col h-screen w-screen pointer-events-none  p-8'>
-                        <LocationDisplay ChangeScene={changeScene}/>
-                        <CharacterDisplay character={character} setPlaceables={setPlaceables} characterTask={characterTask}/>
-                        <ActionDisplay location={HOUSE} character={character}/>
-                    </div>
-                );
-                break; */
-      case "village":
-        return (
-          <div className="absolute top-0 z-10 flex flex-col h-screen w-screen pointer-events-none">
-            <div className="h-full w-full p-8">
-              <Narrator
-                narratorMessage={narratorMessage}
-                narratorTick={narratorTick}
-                messages={tempmessages}
-              />
-
-              <Toast narratorMessage={narratorMessage} />
-
-              <LocationDisplay ChangeScene={changeScene} />
-              <ButtonDisplay
-                character={character}
-                setPlaceables={setPlaceables}
-              />
-              <CharacterDisplay
-                character={character}
-                characterTask={characterTask}
-              />
-
-              <StatusBarDisplay
-                narratorTick={narratorTick}
-                health={health}
-                hunger={hunger}
-                thirst={thirst}
-                setHealth={setHealth}
-                setHunger={setHunger}
-                setThirst={setThirst}
-              />
-
-              <ActionDisplay
-                handleTask={handleTask}
-                setPlaceables={setPlaceables}
-                sendMessageToNarrator={sendMessageToNarrator}
-                location={SURROUNDING}
-                character={character}
-                characterTask={characterTask}
-                setCharacterTask={setCharacterTask}
-                startTaskTimer={startTaskTimer}
-              />
-              <PlacementDisplay
-                character={character}
-                placeables={placeables}
-                setCanPlace={setCanPlace}
-                setSelectableToPlace={setSelectableToPlace}
-              />
-            </div>
-          </div>
-        );
-
-      case "world":
-        return (
-          <div className="absolute top-0 z-10 flex flex-col h-screen w-screen pointer-events-none p-8">
-            <Toast narratorMessage={narratorMessage} />
-
-            <LocationDisplay ChangeScene={changeScene} />
-            <ButtonDisplay
-              character={character}
-              setPlaceables={setPlaceables}
-            />
-            <CharacterDisplay
-              character={character}
-              characterTask={characterTask}
-            />
-
-            <StatusBarDisplay
-              narratorTick={narratorTick}
-              health={health}
-              hunger={hunger}
-              thirst={thirst}
-              setHealth={setHealth}
-              setHunger={setHunger}
-              setThirst={setThirst}
-            />
-          </div>
-        );
-      default:
-      // return <House />
-    }
-  }
-
   function makeid(length) {
     var result = "";
     var characters =
@@ -432,13 +325,44 @@ const Engine = (props) => {
 
   return (
     <Fragment>
-      {handleUi(sceneName)}
-
       <div id="canvas-container" className="fixed top-0 h-full w-full">
         <Canvas shadows>
           <Suspense fallback={<Loading />}>{sceneSelector(sceneName)}</Suspense>
         </Canvas>
       </div>
+
+      <Toast narratorMessage={narratorMessage} />
+
+      <Narrator
+        narratorMessage={narratorMessage}
+        narratorTick={narratorTick}
+        messages={tempmessages}
+      />
+
+      <Ui
+        setHealth={setHealth}
+        setHunger={setHunger}
+        setThirst={setThirst}
+        health={health}
+        hunger={hunger}
+        thirst={thirst}
+        characterTask={characterTask}
+        setPlaceables={setPlaceables}
+        sceneName={sceneName}
+        character={character}
+        tempmessages={tempmessages}
+        changeScene={changeScene}
+        narratorTick={narratorTick}
+        narratorMessage={narratorMessage}
+        handleTask={handleTask}
+        sendMessageToNarrator={sendMessageToNarrator}
+        SURROUNDING={SURROUNDING}
+        setCharacterTask={setCharacterTask}
+        startTaskTimer={startTaskTimer}
+        placeables={placeables}
+        setCanPlace={setCanPlace}
+        setSelectableToPlace={setSelectableToPlace}
+      />
 
       <Modal
         isOpen={modalIsOpen}

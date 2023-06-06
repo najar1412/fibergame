@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 const PlacementDisplay = (props) => {
   function handleClick(e) {
     props.setCanPlace(true);
