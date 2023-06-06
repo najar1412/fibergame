@@ -67,6 +67,10 @@ let tempmessages = [
   { message: "tester tester tester4", type: "general", id: 3 },
 ];
 
+let getNarratorMessage = () => {
+  return tempmessages[Math.floor(Math.random() * tempmessages.length)];
+};
+
 const Engine = (props) => {
   const SEED = 20;
   const [narratorTick, setNarratorTick] = useState(0);
@@ -205,9 +209,8 @@ const Engine = (props) => {
       <Toast narratorMessage={narratorMessage} />
 
       <Narrator
-        narratorMessage={narratorMessage}
         narratorTick={narratorTick}
-        messages={tempmessages}
+        getNarratorMessage={getNarratorMessage}
       />
 
       <Ui

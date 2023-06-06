@@ -7,15 +7,14 @@ const Narrator = (props) => {
 
   useEffect(() => {
     if (Math.random() > 0.9) {
-      let newMessage =
-        props.messages[Math.floor(Math.random() * props.messages.length)];
+      let newMessage = props.getNarratorMessage();
 
       setMessageStack([...messageStack, newMessage]);
     }
   }, [props.narratorTick]);
 
   return (
-    <div className="absolute right-0 top-0 flex flex-col h-screen pt-8 w-full max-w-[300px] overflow-hidden select-none z-50 pointer-events-none">
+    <div className="absolute right-0 top-0 flex flex-col h-screen pt-8 w-full max-w-[300px] overflow-hidden select-none z-20 pointer-events-none">
       {messageStack.map((message) => {
         if (message.type === "general") {
           return (
