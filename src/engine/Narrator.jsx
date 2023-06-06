@@ -14,7 +14,7 @@ const Narrator = (props) => {
   }, [props.narratorTick]);
 
   return (
-    <div className="absolute right-0 top-0 flex flex-col h-screen pt-8 w-full max-w-[300px] overflow-hidden select-none z-20 pointer-events-none">
+    <div className="narrator-display">
       {messageStack.map((message) => {
         if (message.type === "general") {
           return (

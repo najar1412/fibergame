@@ -71,6 +71,15 @@
 .button-disabled {
   @apply !pointer-events-none !bg-gray-300 !text-gray-500 !animate-none border-gray-300 select-none;
 }
+.narrator-display {
+  @apply absolute right-0 top-0 flex flex-col h-screen pt-8 w-full max-w-[300px] overflow-hidden select-none z-20 pointer-events-none;
+}
+.button-display {
+  @apply pointer-events-auto w-fit mb-4;
+}
+.statusbar-display {
+  @apply flex flex-col mb-8;
+}
 
 @media (min-width: 1024px) {
   .location-modal {

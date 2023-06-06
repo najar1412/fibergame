@@ -22,10 +22,10 @@ const StatusBarDisplay = (props) => {
     }
   }, [props.narratorTick]);
   return (
-    <div className="flex flex-col mb-8">
+    <div className="statusbar-display">
       <div className="flex items-center">
-        <img className="max-w-[24px] mr-4" src={healthIcon} />
-        <div className="w-[100px] h-[10px] border rounded-full relative overflow-hidden">
+        <img className="max-w-[18px] mr-4" src={healthIcon} />
+        <div className="w-[100px] h-[10px] border-[1px] border-black bg-white/10 rounded-full relative overflow-hidden">
           <div
             className="absolute w-full h-full bg-black"
             style={{ width: `${props.health}%` }}
@@ -34,8 +34,8 @@ const StatusBarDisplay = (props) => {
       </div>
 
       <div className="flex items-center">
-        <img className="max-w-[24px] mr-4" src={hungerIcon} />
-        <div className="w-[100px] h-[10px] border rounded-full relative overflow-hidden">
+        <img className="max-w-[18px] mr-4" src={hungerIcon} />
+        <div className="w-[100px] h-[10px] border-[1px] border-black bg-white/10 rounded-full relative overflow-hidden">
           <div
             className="absolute w-full h-full bg-black"
             style={{ width: `${props.hunger}%` }}
@@ -44,8 +44,8 @@ const StatusBarDisplay = (props) => {
       </div>
 
       <div className="flex items-center">
-        <img className="max-w-[24px] mr-4" src={thirstIcon} />
-        <div className="w-[100px] h-[10px] border rounded-full relative overflow-hidden">
+        <img className="max-w-[18px] mr-4" src={thirstIcon} />
+        <div className="w-[100px] h-[10px] border-[1px] border-black bg-white/10 rounded-full relative overflow-hidden">
           <div
             className="absolute w-full h-full bg-black"
             style={{ width: `${props.thirst}%` }}

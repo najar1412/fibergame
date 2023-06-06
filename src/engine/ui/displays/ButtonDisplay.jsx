@@ -73,7 +73,7 @@ const ButtonDisplay = (props) => {
 
   return (
     <Fragment>
-      <div id="button-display" className="pointer-events-auto w-fit mb-8">
+      <div className="button-display">
         <div className="flex">
           <div
             onClick={() => openModal("inventory")}
